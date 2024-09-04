@@ -14,6 +14,10 @@ dist-ssr
 
 # Fichiers locaux
 *.local
+.env
+
+# Fichiers de gestion de versions
+package-lock.json
 
 # Dossiers et fichiers de l'éditeur
 .vscode/*
