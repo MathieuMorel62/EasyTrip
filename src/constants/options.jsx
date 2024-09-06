@@ -51,7 +51,7 @@ export const SelectBudgetOptions = [
   }
 ];
 
-export const AI_PROMPT = 'Generate travel plan for location: {location}, for {totalDays} Days for {traveler} with a {budget} budget, give me {hotelOptions} list with {hotelName}, {hotelAddress}, {price}, {geoCoordinates}, {rating}, {descriptions} and suggest {itinerary} with {placeName}, {placeDetails}, {placeImageUrl}, {geoCoordinates}, {ticketPricing}, {time} from **h to **h, {timeTravel} **h or **mn to ** on car or on foot from **, each of the location for {totalDays} days with each day plan with best time to visit in JSON format.'
+export const AI_PROMPT = 'Generate a travel plan in french for location: {location}, for {totalDays} days for {traveler} with a {budget} budget. Provide a list of hotel options with "hotelName", "hotelAddress", "price", "geoCoordinates", "rating", "descriptions". Additionally, suggest a detailed daily itinerary including "day", "placeName", "placeDetails", "placeImageUrl", "geoCoordinates", "ticketPricing", "time", "timeTravel", and "from". The output should be in JSON format as follows: "hotelOptions": [{hotelName, hotelAddress, price, geoCoordinates, rating, descriptions}], and "itinerary": [{day, plan: [{placeName, placeDetails, placeImageUrl, geoCoordinates, ticketPricing, time, timeTravel, from}]}] for {totalDays} days.';
 // Exemple de structure JSON désirée :
 
 /*
@@ -61,7 +61,6 @@ export const AI_PROMPT = 'Generate travel plan for location: {location}, for {to
       "hotelName": "The Ritz-Carlton, South Beach",
       "hotelAddress": "1 Lincoln Road, Miami Beach, FL 33139, États-Unis",
       "price": "à partir de 450 $ la nuit",
-      "hotelImageUrl": "https://www.ritzcarlton.com/en/hotels/miami-south-beach/images/hotel-gallery/hero-image.jpg",
       "geoCoordinates": "25.7686,-80.1317",
       "rating": "4.5 étoiles",
       "descriptions": "Un hôtel de luxe avec une plage privée, une piscine à débordement et des restaurants gastronomiques."
@@ -70,7 +69,6 @@ export const AI_PROMPT = 'Generate travel plan for location: {location}, for {to
       "hotelName": "The Setai, Miami Beach",
       "hotelAddress": "2001 Collins Ave, Miami Beach, FL 33139, États-Unis",
       "price": "à partir de 350 $ la nuit",
-      "hotelImageUrl": "https://www.thesetai.com/images/slideshow-images/slide-2.jpg",
       "geoCoordinates": "25.7937,-80.1377",
       "rating": "4 étoiles",
       "descriptions": "Un hôtel élégant avec une vue imprenable sur l'océan, une plage privée et des options de restauration exceptionnelles."
@@ -79,7 +77,6 @@ export const AI_PROMPT = 'Generate travel plan for location: {location}, for {to
       "hotelName": "The Fontainebleau Miami Beach",
       "hotelAddress": "4441 Collins Ave, Miami Beach, FL 33140, États-Unis",
       "price": "à partir de 250 $ la nuit",
-      "hotelImageUrl": "https://www.fontainebleau.com/media/1244/fontainebleau-hero-image.jpg",
       "geoCoordinates": "25.7969,-80.1429",
       "rating": "4 étoiles",
       "descriptions": "Un hôtel emblématique avec une plage privée, plusieurs piscines et une variété d'options de restauration et de divertissement."
