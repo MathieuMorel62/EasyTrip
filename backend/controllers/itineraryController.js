@@ -17,11 +17,11 @@ export const createItinerary = (tripId, itinerary, callback) => {
     // Création des requêtes SQL pour chaque plan de jour
     const planQueries = plan.map((place) => {
       // Extraction des informations de chaque lieu
-      const { placeName, placeDetails, placeImageUrl, geoCoordinates, ticketPricing, timeTravel, time } = place;
+      const { placeName, placeDetails, geoCoordinates, ticketPricing, timeTravel, time } = place;
       // Création de la requête SQL pour insérer le lieu dans la base de données
-      const query = 'INSERT INTO itinerary (id, tripId, day, placeName, placeDetails, placeImageUrl, geoCoordinates, ticketPricing, timeTravel, time) VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      const query = 'INSERT INTO itinerary (id, tripId, day, placeName, placeDetails, geoCoordinates, ticketPricing, timeTravel, time) VALUES (UUID(), ?, ?, ?, ?, ?, ?, ?, ?)';
       // Création des valeurs pour la requête SQL
-      const values = [tripId, day.day, placeName, placeDetails, placeImageUrl, JSON.stringify(geoCoordinates), ticketPricing, timeTravel, time];
+      const values = [tripId, day.day, placeName, placeDetails, JSON.stringify(geoCoordinates), ticketPricing, timeTravel, time];
 
       console.log('SQL Query:', query);
       console.log('Values:', values);
