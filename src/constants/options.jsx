@@ -51,128 +51,83 @@ export const SelectBudgetOptions = [
   }
 ];
 
-export const AI_PROMPT = 'Generate a travel plan in french for location: {location}, for {totalDays} days for {traveler} with a {budget} budget. Provide a list of hotel options with "hotelName", "hotelAddress", "price", "geoCoordinates", "rating", "descriptions". Additionally, suggest a detailed daily itinerary including "day", "placeName", "placeDetails", "placeImageUrl", "geoCoordinates", "ticketPricing", "time", "timeTravel", and "from". The output should be in JSON format as follows: "hotelOptions": [{hotelName, hotelAddress, price, geoCoordinates, rating, descriptions}], and "itinerary": [{day, plan: [{placeName, placeDetails, placeImageUrl, geoCoordinates, ticketPricing, time, timeTravel, from}]}] for {totalDays} days.';
-// Exemple de structure JSON désirée :
+export const AI_PROMPT = `Generate a detailed travel plan in French for the location: {location}, lasting {totalDays} days, for {traveler}, with a budget of {budget}. The output should be in French and include two sections:
+1. "hotelOptions" — Provide at least three hotel options in French, with each hotel described using the following attributes: "hotelName", "hotelAddress", "price" (specify the currency), "geoCoordinates" (latitude and longitude), "rating" (in stars), and "descriptions" (highlighting the hotel's key features, like amenities, location, and style).
+2. "itinerary" — Suggest a day-by-day detailed itinerary for {totalDays} days in French, with each day formatted as "Jour {dayNumber}". For each day, provide a list of activities organized in a logical sequence to minimize travel time, including a **lunch break**, **dinner**, and potentially a night out based on the traveler profile. Each activity should include:
+  - "day" (e.g., Jour 1, Jour 2, etc.),
+  - "plan" (A list of activities for that day). For each activity, include:
+    - "placeName" (name of the place),
+    - "placeDetails" (brief description of the activity or site in French),
+    - "geoCoordinates" (latitude and longitude),
+    - "ticketPricing" (indicate the cost or mention if free in French),
+    - "time" (start and end time for the visit in the format "from {startTime} to {endTime}", e.g., "de 10h à 12h"),
+    - "timeTravel" (travel time from the previous location in minutes or hours in French, e.g., "15 minutes à pied", "20 minutes en voiture"),
+    - "from" (starting point of travel, which should be the previous activity or the hotel for the first activity of the day).
 
-/*
+Ensure the following is included within the "itinerary" plan:
+- A **lunch break** at a local restaurant or café, fitting the {budget}. Provide the restaurant name, address, and a brief description.
+- A **dinner reservation** at a suitable restaurant according to the {budget}, with details like name, address, and the type of cuisine.
+- If the traveler profile fits, suggest a **night out at a club** or bar. This should be determined by {traveler} (e.g., if they are traveling with friends or solo). Include the venue's name, address, and entry pricing.
+
+Please ensure that the final output is in French and structured in JSON format as follows:
 {
   "hotelOptions": [
     {
-      "hotelName": "The Ritz-Carlton, South Beach",
-      "hotelAddress": "1 Lincoln Road, Miami Beach, FL 33139, États-Unis",
-      "price": "à partir de 450 $ la nuit",
-      "geoCoordinates": "25.7686,-80.1317",
-      "rating": "4.5 étoiles",
-      "descriptions": "Un hôtel de luxe avec une plage privée, une piscine à débordement et des restaurants gastronomiques."
+      "hotelName": "Example Hotel",
+      "hotelAddress": "Adresse, Ville, Pays",
+      "price": "À partir de {prix} par nuit",
+      "geoCoordinates": "{latitude},{longitude}",
+      "rating": "{nombre d'étoiles} étoiles",
+      "descriptions": "{caractéristiques principales}"
     },
-    {
-      "hotelName": "The Setai, Miami Beach",
-      "hotelAddress": "2001 Collins Ave, Miami Beach, FL 33139, États-Unis",
-      "price": "à partir de 350 $ la nuit",
-      "geoCoordinates": "25.7937,-80.1377",
-      "rating": "4 étoiles",
-      "descriptions": "Un hôtel élégant avec une vue imprenable sur l'océan, une plage privée et des options de restauration exceptionnelles."
-    },
-    {
-      "hotelName": "The Fontainebleau Miami Beach",
-      "hotelAddress": "4441 Collins Ave, Miami Beach, FL 33140, États-Unis",
-      "price": "à partir de 250 $ la nuit",
-      "geoCoordinates": "25.7969,-80.1429",
-      "rating": "4 étoiles",
-      "descriptions": "Un hôtel emblématique avec une plage privée, plusieurs piscines et une variété d'options de restauration et de divertissement."
-    }
+    ...
   ],
   "itinerary": [
     {
-      "day": "Jour 1",
+      "day": "Jour {dayNumber}",
       "plan": [
         {
-          "placeName": "South Beach",
-          "placeDetails": "Promenez-vous sur la célèbre plage de South Beach, admirez les bâtiments Art Déco et profitez du soleil et de la mer.",
-          "placeImageUrl": "https://www.miamibeachfl.gov/sites/default/files/styles/featured_image_lg/public/2019-07/South-Beach-Day-2-1024x576.jpg",
-          "geoCoordinates": "25.7617,-80.1300",
-          "ticketPricing": "Gratuit",
-          "time": "10h à 14h",
-          "timeTravel": "10 mn à pied de votre hôtel",
-          "from": "Votre hôtel"
+          "placeName": "{nom_du_lieu}",
+          "placeDetails": "{description_du_lieu}",
+          "geoCoordinates": "{latitude},{longitude}",
+          "ticketPricing": "{prix_ou_gratuit}",
+          "time": "de {heure_de_début} à {heure_de_fin}",  // e.g., "de 10h à 12h"
+          "timeTravel": "{temps_de_trajet} depuis {lieu_précédent}",  // e.g., "15 minutes à pied depuis votre hôtel"
+          "from": "{point_de_départ}"  // e.g., "votre hôtel"
         },
+        // Lunch break
         {
-          "placeName": "Ocean Drive",
-          "placeDetails": "Explorez Ocean Drive, la rue la plus animée de South Beach, avec ses restaurants, bars et boutiques.",
-          "placeImageUrl": "https://www.miamibeachfl.gov/sites/default/files/styles/featured_image_lg/public/2018-03/Ocean-Drive-1024x576.jpg",
-          "geoCoordinates": "25.7712,-80.1330",
-          "ticketPricing": "Gratuit",
-          "time": "14h à 18h",
-          "timeTravel": "5 mn à pied de South Beach",
-          "from": "South Beach"
+          "placeName": "{nom_du_restaurant}",
+          "placeDetails": "Pause déjeuner dans un restaurant local selon votre budget.",
+          "geoCoordinates": "{latitude},{longitude}",
+          "ticketPricing": "{prix_ou_gratuit}",
+          "time": "de {heure_de_début} à {heure_de_fin}",  // e.g., "de 12h30 à 14h"
+          "timeTravel": "{temps_de_trajet} depuis {lieu_précédent}",
+          "from": "{point_de_départ}"
         },
+        // Afternoon activities...
+        // Dinner reservation
         {
-          "placeName": "Art Deco Welcome Center",
-          "placeDetails": "Découvrez l'histoire de l'architecture Art Déco de Miami Beach et participez à une visite guidée.",
-          "placeImageUrl": "https://www.miamibeachfl.gov/sites/default/files/styles/featured_image_lg/public/2018-03/Art-Deco-Welcome-Center-1024x576.jpg",
-          "geoCoordinates": "25.7704,-80.1323",
-          "ticketPricing": "Gratuit",
-          "time": "18h à 20h",
-          "timeTravel": "5 mn à pied d'Ocean Drive",
-          "from": "Ocean Drive"
+          "placeName": "{nom_du_restaurant}",
+          "placeDetails": "Dîner dans un restaurant recommandé selon votre budget.",
+          "geoCoordinates": "{latitude},{longitude}",
+          "ticketPricing": "{prix_ou_gratuit}",
+          "time": "de {heure_de_début} à {heure_de_fin}",  // e.g., "de 19h à 21h"
+          "timeTravel": "{temps_de_trajet} depuis {lieu_précédent}",
+          "from": "{point_de_départ}"
         },
+        // Optional: Night out
         {
-          "placeName": "Joe's Stone Crab",
-          "placeDetails": "Savourez un dîner de crabe de pierre dans ce restaurant emblématique de Miami Beach.",
-          "placeImageUrl": "https://www.joesstonecrab.com/media/img/restaurant-exterior.jpg",
-          "geoCoordinates": "25.7780,-80.1379",
-          "ticketPricing": "À la carte",
-          "time": "20h à 23h",
-          "timeTravel": "15 mn à pied d'Art Deco Welcome Center",
-          "from": "Art Deco Welcome Center"
+          "placeName": "{nom_du_club}",
+          "placeDetails": "Sortie en boîte de nuit ou bar selon le profil du voyageur.",
+          "geoCoordinates": "{latitude},{longitude}",
+          "ticketPricing": "{prix_ou_gratuit}",
+          "time": "de {heure_de_début} à {heure_de_fin}",  // e.g., "de 23h à 2h"
+          "timeTravel": "{temps_de_trajet} depuis {lieu_précédent}",
+          "from": "{point_de_départ}"
         }
       ]
     },
-    {
-      "day": "Jour 2",
-      "plan": [
-        {
-          "placeName": "Vizcaya Museum & Gardens",
-          "placeDetails": "Visitez ce magnifique manoir et ses jardins, offrant un aperçu du luxe de l'époque de la Renaissance italienne.",
-          "placeImageUrl": "https://www.vizcaya.org/sites/default/files/styles/hero_image_800x533/public/2021-05/Vizcaya-Garden-Fountain.jpg",
-          "geoCoordinates": "25.7529,-80.1339",
-          "ticketPricing": "22 $ par adulte",
-          "time": "10h à 13h",
-          "timeTravel": "20 mn en voiture de votre hôtel",
-          "from": "Votre hôtel"
-        },
-        {
-          "placeName": "Wynwood Walls",
-          "placeDetails": "Explorez ce quartier d'art urbain coloré et admirez les graffitis de certains des meilleurs artistes de rue du monde.",
-          "placeImageUrl": "https://www.wynwoodwalls.com/assets/images/default/wynwood-walls-art-gallery-mural-art.jpg",
-          "geoCoordinates": "25.7840,-80.1950",
-          "ticketPricing": "Gratuit",
-          "time": "13h à 16h",
-          "timeTravel": "30 mn en voiture de Vizcaya Museum & Gardens",
-          "from": "Vizcaya Museum & Gardens"
-        },
-        {
-          "placeName": "Little Havana",
-          "placeDetails": "Plongez dans la culture cubaine vibrante de Little Havana, avec ses restaurants, ses bars et ses boutiques.",
-          "placeImageUrl": "https://www.miamibeachfl.gov/sites/default/files/styles/featured_image_lg/public/2019-07/Little-Havana-1024x576.jpg",
-          "geoCoordinates": "25.7653,-80.2130",
-          "ticketPricing": "Gratuit",
-          "time": "16h à 19h",
-          "timeTravel": "15 mn en voiture de Wynwood Walls",
-          "from": "Wynwood Walls"
-        },
-        {
-          "placeName": "Calle Ocho",
-          "placeDetails": "Promenez-vous sur Calle Ocho, la rue principale de Little Havana, et découvrez les boutiques, les restaurants et l'atmosphère animée.",
-          "placeImageUrl": "https://www.miamibeachfl.gov/sites/default/files/styles/featured_image_lg/public/2019-07/Calle-Ocho-1024x576.jpg",
-          "geoCoordinates": "25.7649,-80.2125",
-          "ticketPricing": "Gratuit",
-          "time": "19h à 21h",
-          "timeTravel": "5 mn à pied de Little Havana",
-          "from": "Little Havana"
-        }
-      ]
-    }
+    ...
   ]
-}
-*/
+}`;
