@@ -69,7 +69,7 @@ export const getTripById = (req, res) => {
       SELECT 
       trips.*, 
       locations.adminCode1, locations.adminName1, locations.countryCode, locations.countryName, locations.geonameId, locations.lat, locations.lng, locations.population,
-      itinerary.id as itineraryId, itinerary.day, itinerary.placeName, itinerary.placeDetails, itinerary.placeImageUrl, itinerary.geoCoordinates, itinerary.ticketPricing, itinerary.timeTravel, itinerary.time,
+      itinerary.id as itineraryId, itinerary.day, itinerary.placeName, itinerary.placeDetails, itinerary.geoCoordinates, itinerary.ticketPricing, itinerary.timeTravel, itinerary.time,
       hotels.id as hotelId, hotels.hotelName, hotels.hotelAddress, hotels.price, hotels.geoCoordinates as hotelGeoCoordinates, hotels.rating, hotels.description
     FROM trips
     LEFT JOIN locations ON trips.id = locations.tripId
@@ -120,7 +120,6 @@ export const getTripById = (req, res) => {
           day: row.day,
           placeName: row.placeName,
           placeDetails: row.placeDetails,
-          placeImageUrl: row.placeImageUrl,
           geoCoordinates: row.geoCoordinates,
           ticketPricing: row.ticketPricing,
           timeTravel: row.timeTravel,
