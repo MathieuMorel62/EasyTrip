@@ -57,7 +57,7 @@ function UserTripCardItem({ trip, onDelete }) {
       <div className='absolute bottom-2 right-2'>
         <button 
           onClick={handleMenuOpen} 
-          className='text-lg p-2 hover:bg-gray-200 rounded-full'
+          className='text-lg p-2 hover:bg-gray-200 rounded-full cursor-pointer'
         >
           <FaRegTrashCan />
         </button>
@@ -74,7 +74,7 @@ UserTripCardItem.propTypes = {
     id: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
     nbOfDays: PropTypes.number.isRequired,
-    budget: PropTypes.number.isRequired,
+    budget: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     locations: PropTypes.shape({
       countryName: PropTypes.string,
       adminName1: PropTypes.string,
