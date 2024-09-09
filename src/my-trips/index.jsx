@@ -6,29 +6,24 @@ import UserTripCardItem from './components/UserTripCardItem';
 // Fonction pour afficher les trips de l'utilisateur
 function MyTrips() {
   const [trips, setTrips] = useState([]);
-  // Fonction pour gérer la pagination
   const [currentPage, setCurrentPage] = useState(1);
-  // Nombre de trips par page
   const tripsPerPage = 6;
 
-  // Récupére les trips de l'utilisateur
+  // Récupération des trips de l'utilisateur
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        // Récupérer l'utilisateur
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user || !user.token) {
           throw new Error('Utilisateur non authentifié');
         }
 
-        // Récupérer les trips de l'utilisateur
         const response = await axios.get('http://localhost:5001/api/trips', {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
         });
 
-        // Récupérer les détails des trips
         const tripDetailsPromises = response.data.map(trip =>
           axios.get(`http://localhost:5001/api/trips/${trip.id}`, {
             headers: {
@@ -36,6 +31,7 @@ function MyTrips() {
             },
           }).then(res => res.data)
         );
+
         const tripDetails = await Promise.all(tripDetailsPromises);
         setTrips(tripDetails);
       } catch (error) {
@@ -45,11 +41,31 @@ function MyTrips() {
     fetchTrips();
   }, []);
 
-  // Récupérer les trips de la page actuelle
+  // Fonction pour supprimer un trip
+  const handleDeleteTrip = async (tripId) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user || !user.token) {
+        throw new Error('Utilisateur non authentifié');
+      }
+
+      // Suppression du trip
+      await axios.delete(`http://localhost:5001/api/trips/${tripId}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      // Suppression du trip de l'état
+      setTrips(trips.filter(trip => trip.id !== tripId));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du voyage :', error);
+    }
+  };
+
+  // Calcul des index pour la pagination
   const indexOfLastTrip = currentPage * tripsPerPage;
-  // Récupérer les trips de la page précédente
   const indexOfFirstTrip = indexOfLastTrip - tripsPerPage;
-  // Récupérer les trips de la page actuelle
   const currentTrips = trips.slice(indexOfFirstTrip, indexOfLastTrip);
 
   return (
@@ -62,7 +78,7 @@ function MyTrips() {
       ) : (
         <div className='grid grid-cols-2 md:grid-cols-3 mt-10 gap-5'>
           {currentTrips.map((trip) => (
-            <UserTripCardItem key={trip.id} trip={trip} />
+            <UserTripCardItem key={trip.id} trip={trip} onDelete={handleDeleteTrip} />
           ))}
         </div>
       )}
