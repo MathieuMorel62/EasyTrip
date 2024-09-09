@@ -144,3 +144,20 @@ export const getTripById = (req, res) => {
     res.status(200).json(trip);
   });
 };
+
+// Fonction pour supprimer un voyage par ID
+export const deleteTripById = (req, res) => {
+  const { tripId } = req.params;
+  const userId = req.user.id;
+  const query = 'DELETE FROM trips WHERE id = ? AND userId = ?';
+  db.query(query, [tripId, userId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la suppression du voyage :', err);
+      return res.status(500).json({ error: 'Erreur lors de la suppression du voyage' });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'Voyage non trouvé' });
+    }
+    res.status(200).json({ message: 'Voyage supprimé avec succès' });
+  });
+};
