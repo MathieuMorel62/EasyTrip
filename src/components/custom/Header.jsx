@@ -36,12 +36,14 @@ function Header() {
       <div>
         {user ? (
           <div className="flex items-center gap-3">
+            <a href="/my-trips">
             <Button
               variant="outline"
               className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
             >
-              Mon Trip
+              Mes Trips
             </Button>
+            </a>
             <Popover>
               <PopoverTrigger>
                 <span className="text-white hover:bg-black bg-[#f56551] p-5 rounded-full border-solid border-[0.2rem] border-[#f56551] h-[35px] w-[35px] flex items-center justify-center text-lg font-semibold">
