@@ -5,21 +5,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../components/ui/popover";
-
 import LoginDialog from "../custom/LoginDialog";
+import UpdateUserDialog from "../custom/UpdateUserDialog";
+import { FiLogOut, FiUser } from "react-icons/fi";
 
 // Composant pour l'en-tête de la page
 function Header() {
   const [user, setUser] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
 
-  // Effet pour récupérer l'utilisateur à partir du localStorage
+  // Récupérer les données de l'utilisateur à partir du localStorage
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
   }, []);
 
-  // Récupérer les initiales de l'utilisateur
+  // Calculer les initiales de l'utilisateur
   const initials =
     user && user.user && user.user.name
       ? user.user.name
@@ -27,6 +29,13 @@ function Header() {
           .map((name) => name.charAt(0).toUpperCase())
           .join("")
       : "";
+
+  // Fonction pour déconnecter l'utilisateur
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    window.location.href = "/";
+  };
 
   return (
     <div className="w-full fixed z-20 p-3 shadow-sm flex justify-between items-center px-5 bg-black">
@@ -37,20 +46,20 @@ function Header() {
         {user ? (
           <div className="flex items-center gap-3">
             <a href="/create-trip">
-            <Button
-              variant="outline"
-              className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
-            >
-              Créer un Trip
-            </Button>
+              <Button
+                variant="outline"
+                className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
+              >
+                Créer un Trip
+              </Button>
             </a>
             <a href="/my-trips">
-            <Button
-              variant="outline"
-              className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
-            >
-              Mes Trips
-            </Button>
+              <Button
+                variant="outline"
+                className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
+              >
+                Mes Trips
+              </Button>
             </a>
             <Popover>
               <PopoverTrigger>
@@ -58,14 +67,19 @@ function Header() {
                   {initials}
                 </span>
               </PopoverTrigger>
-              <PopoverContent
-                className="cursor-pointer"
-                onClick={() => {
-                  localStorage.removeItem("user");
-                  window.location.href = "/";
-                }}
-              >
-                Déconnexion
+              <PopoverContent className="cursor-pointer">
+                <div
+                  onClick={() => setOpenUpdateDialog(true)}
+                  className="mb-2 flex items-center"
+                >
+                  <FiUser className="mr-2" /> Mon profil
+                </div>
+                <div
+                  onClick={handleLogout}
+                  className="cursor-pointer flex items-center"
+                >
+                  <FiLogOut className="mr-2" /> Déconnexion
+                </div>
               </PopoverContent>
             </Popover>
           </div>
@@ -84,6 +98,11 @@ function Header() {
         open={openDialog}
         onOpenChange={setOpenDialog}
         onLoginSuccess={() => window.location.reload()}
+      />
+      <UpdateUserDialog
+        open={openUpdateDialog}
+        onOpenChange={setOpenUpdateDialog}
+        onUpdateSuccess={() => window.location.reload()}
       />
     </div>
   );
