@@ -7,13 +7,14 @@ import {
 } from "../../components/ui/popover";
 import LoginDialog from "../custom/LoginDialog";
 import UpdateUserDialog from "../custom/UpdateUserDialog";
-import { FiLogOut, FiUser } from "react-icons/fi";
+import { FiLogOut, FiUser, FiMenu, FiX } from "react-icons/fi";
 
 // Composant pour l'en-tête de la page
 function Header() {
   const [user, setUser] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Récupérer les données de l'utilisateur à partir du localStorage
   useEffect(() => {
@@ -42,28 +43,43 @@ function Header() {
       <a href="/" className="w-44 h-15">
         <img src="/logo.svg" className="w-44 h-15" />
       </a>
-      <div>
+
+      {/* Bouton hamburger pour le mobile */}
+      <div className="md:hidden">
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="text-white focus:outline-none"
+        >
+          {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        </button>
+      </div>
+
+      {/* Menu principal (pour les écrans moyens et grands) */}
+      <div className="hidden md:flex items-center gap-3">
         {user ? (
-          <div className="flex items-center gap-3">
+          <>
             <a href="/create-trip">
               <Button
-                variant="outline"
-                className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
+                className="relative p-[0.17rem] bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-500"
               >
-                Créer un Trip
+                <span className="bg-black block p-2 rounded-md bg-clip-padding transition-all duration-300 hover:bg-transparent hover:text-white">
+                  <span className="mr-1 text-md">+</span>Créer un trip
+                </span>
               </Button>
             </a>
+
             <a href="/my-trips">
               <Button
-                variant="outline"
-                className="rounded-full h-[45px] bg-black text-white hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] font-semibold"
+                className="relative p-[0.17rem] bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600"
               >
-                Mes Trips
+                <span className="bg-black block p-2 rounded-md bg-clip-padding transition-all duration-300 hover:bg-transparent hover:text-white">
+                  Mes trips
+                </span>
               </Button>
             </a>
             <Popover>
               <PopoverTrigger>
-                <span className="text-white hover:bg-black bg-[#f56551] p-5 rounded-full border-solid border-[0.2rem] border-[#f56551] h-[35px] w-[35px] flex items-center justify-center text-lg font-semibold">
+                <span className="text-white bg-gradient-to-r from-purple-600 to-blue-500 p-5 rounded-full h-[35px] w-[35px] flex items-center justify-center text-sm font-semibold transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600">
                   {initials}
                 </span>
               </PopoverTrigger>
@@ -82,18 +98,54 @@ function Header() {
                 </div>
               </PopoverContent>
             </Popover>
-          </div>
+          </>
         ) : (
-          <div className="flex items-center gap-3">
+          <Button
+            className="relative p-[0.2rem] bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg cursor-pointer transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600"
+            onClick={() => setOpenDialog(true)}
+          >
+            <span className="bg-black block p-2 rounded-md bg-clip-padding transition-all duration-300 hover:bg-transparent hover:text-white">
+              Connexion
+            </span>
+          </Button>
+        )}
+      </div>
+
+      {/* Menu mobile */}
+      {menuOpen && (
+        <div className="absolute top-16 left-0 w-full bg-black text-white md:hidden flex flex-col items-center gap-3 py-5 z-10">
+          {user ? (
+            <>
+              <a href="/create-trip" className="text-white">
+                Créer un Trip
+              </a>
+              <a href="/my-trips" className="text-white">
+                Mes Trips
+              </a>
+              <div
+                onClick={() => setOpenUpdateDialog(true)}
+                className="flex items-center cursor-pointer"
+              >
+                <FiUser className="mr-2" /> Mon profil
+              </div>
+              <div
+                onClick={handleLogout}
+                className="flex items-center cursor-pointer"
+              >
+                <FiLogOut className="mr-2" /> Déconnexion
+              </div>
+            </>
+          ) : (
             <Button
-              className="hover:bg-[#f56551] hover:text-white border-solid border-[0.2rem] border-[#f56551] cursor-pointer"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg px-4 py-2"
               onClick={() => setOpenDialog(true)}
             >
               Connexion
             </Button>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+
       <LoginDialog
         open={openDialog}
         onOpenChange={setOpenDialog}
