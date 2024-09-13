@@ -42,15 +42,17 @@ function AutocompleteSearch({ selectProps }) {
   };
 
   return (
-    <div className="relative">
-      <input 
-        type="text" 
-        value={query} 
-        onChange={(e) => setQuery(e.target.value)} 
-        placeholder="Rechercher une ville..." 
-        className="w-full font-light text-sm md:w-80 h-10 p-2 border border-gray-200 rounded border-solid focus:border-gray-500 focus:outline-none"
-      />
-      {suggestions.length > 0 && (
+    <div className="flex flex-col md:flex-row justify-between items-center">
+      <div className="w-full md:w-3/4"> {/* Augmenté à 3/4 pour tablette */}
+        <input 
+          type="text" 
+          value={query} 
+          onChange={(e) => setQuery(e.target.value)} 
+          placeholder="Rechercher une ville..." 
+          className="w-full font-light text-sm h-10 p-2 border border-gray-200 rounded border-solid focus:border-gray-500 focus:outline-none"
+        />
+      </div>
+      <div className="w-full md:w-1/2"> 
         <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1">
           {suggestions.map((city) => (
             <li 
@@ -62,7 +64,7 @@ function AutocompleteSearch({ selectProps }) {
             </li>
           ))}
         </ul>
-      )}
+      </div>
     </div>
   );
 }
