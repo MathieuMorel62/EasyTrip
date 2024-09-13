@@ -31,13 +31,12 @@ const InfoSection = ({ trip }) => {
       <div className='flex justify-between items-center'>
         <div>
           <h2 className='font-bold text-2xl'>{trip.location}, {trip.locations.adminName1} - {trip.locations.countryName}</h2>
-          <div className='flex gap-5 my-4'>
-            <h2 className='border-solid p-1 px-3 bg-white rounded-full text-gray-500 text-xs sm:text-sm md:text-base lg:text-base'>📅 {trip?.nbOfDays} {trip?.nbOfDays > 1 ? 'jours' : 'jour'}</h2>
-            <h2 className='border-solid p-1 px-3 bg-white rounded-full text-gray-500 text-xs sm:text-sm md:text-base lg:text-base'>💰 Budget: {trip?.budget}</h2>
-            <h2 className='border-solid p-1 px-3 bg-white rounded-full text-gray-500 text-xs sm:text-sm md:text-base lg:text-base'>🥂 Nombre de voyageurs: {trip?.traveler}</h2>
+          <div className='flex flex-col sm:flex-row gap-3 lg:gap-5 my-4'>
+            <h2 className='border-solid border-2 border-gray-600 p-1 px-3 bg-white rounded-full text-gray-500 text-xs sm:text-sm md:text-base lg:text-base'>📅 {trip?.nbOfDays} {trip?.nbOfDays > 1 ? 'jours' : 'jour'}</h2>
+            <h2 className='border-solid border-2 border-gray-600 p-1 px-3 bg-white rounded-full text-gray-500 text-xs sm:text-sm md:text-base lg:text-base'>💰 Budget: {trip?.budget}</h2>
+            <h2 className='border-solid border-2 border-gray-600 p-1 px-3 bg-white rounded-full text-gray-500 text-xs sm:text-sm md:text-base lg:text-base'>🥂 Nombre de voyageurs: {trip?.traveler}</h2>
           </div>
         </div>
-        <Button><IoIosSend /></Button>
       </div>
     </div>
   );
