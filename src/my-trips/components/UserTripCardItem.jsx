@@ -46,9 +46,9 @@ function UserTripCardItem({ trip, onDelete }) {
   }, [trip, GetPlacePhoto]);
 
   return (
-    <div className='border-solid border-2 border-gray-300 rounded-t-xl p-5 mb-5 hover:scale-105 transition-all hover:shadow-md relative'>
+    <div className='border-solid border-2 border-gray-50 rounded-t-xl p-5 mb-5 hover:scale-105 transition-all hover:shadow-md relative bg-white min-w-72'>
       <Link to={`/view-trip/${trip.id}`}>
-        <img src={photoUrl ? photoUrl : './avion.png'} className='object-cover rounded-t-xl w-full h-[350px]' />
+        <img src={photoUrl ? photoUrl : './avion.png'} className='object-cover rounded-t-xl w-full md:h-[200px] lg:h-[290px] xl:h-[200px]' />
         <div>
           <h2 className='font-bold text-lg mt-2'>{trip?.location} - {trip?.locations?.countryName ? trip.locations.countryName : 'Pays non disponible'}</h2>
           <h2 className='text-sm text-gray-500'>{trip?.nbOfDays} jours de voyage avec un budget {trip?.budget}</h2>
