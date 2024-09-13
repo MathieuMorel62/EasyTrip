@@ -27,7 +27,7 @@ function PlaceCardItem({ place, trip }) {
 
   return (
     <Link to={'https://www.google.com/maps/search/?api=1&query=' + place?.placeName + ',' + trip?.location} target='_blank'>
-      <div className='min-h-44 border-solid border-gray-300 border-1 rounded-xl p-3 mt-2 mx-[0.45rem] flex gap-5 hover:scale-105 transition-all duration-300 hover:shadow-xl cursor-pointer bg-white'>
+      <div className='min-h-48 border-solid border-gray-300 border-2 rounded-xl p-3 mt-2 mx-[0.45rem] flex gap-5 hover:scale-105 transition-all duration-300 hover:shadow-xl cursor-pointer bg-white'>
         <img src={photoUrl?photoUrl:"/avion.png"} className='min-w-[130px] max-w-[130px] min-h-[130px] max-h-[130px] rounded-xl' alt="avion" />
         <div className='flex flex-col justify-between flex-grow'>
           <div>
