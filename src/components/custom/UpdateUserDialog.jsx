@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -137,41 +138,49 @@ const UpdateUserDialog = ({ open, onOpenChange, onUpdateSuccess }) => {
           </DialogTitle>
           <DialogDescription />
           <div id="update-description">
-            <label>Prénom</label>
+            <label htmlFor="firstName">Prénom</label>
             <Input
+              id="firstName"
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full mb-5 border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" // Styles améliorés
               disabled={!isEditing}
+              data-testid="firstName-input"
             />
-            <label>Nom</label>
+            <label htmlFor="lastName">Nom</label>
             <Input
+              id="lastName"
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full mb-5 border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" // Styles améliorés
               disabled={!isEditing}
+              data-testid="lastName-input"
             />
-            <label>Email</label>
+            <label htmlFor="email">Email</label>
             <Input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full mb-5 border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" // Styles améliorés
               disabled={!isEditing}
+              data-testid="email-input"
             />
             {isEditing && (
               <>
-                <label>Nouveau mot de passe</label>
+                <label htmlFor="password">Nouveau mot de passe</label>
                 <Input
+                  id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full mb-5 border-2 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" // Styles améliorés
                 />
-                <label>Confirmer le mot de passe</label>
+                <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
                 <Input
+                  id="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -206,6 +215,7 @@ const UpdateUserDialog = ({ open, onOpenChange, onUpdateSuccess }) => {
                 className="w-full ml-2"
                 onClick={handleDelete}
                 variant="destructive"
+                data-testid="delete-button"
               >
                 <Trash className="mr-1 h-4 w-4" /> Supprimer mon compte
               </Button>

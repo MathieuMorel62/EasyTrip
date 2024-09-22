@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';

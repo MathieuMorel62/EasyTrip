@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   AI_PROMPT,
@@ -13,7 +13,7 @@ import AutocompleteSearch from "@/components/api/AutocompleteSearch.jsx";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import LoginDialog from "../components/custom/LoginDialog";
-import { motion } from "framer-motion"; // Framer Motion importé
+import { motion } from "framer-motion";
 
 function CreateTrip() {
   const [place, setPlace] = useState("");

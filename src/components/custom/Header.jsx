@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -41,7 +42,7 @@ function Header() {
   return (
     <div className="w-full fixed z-20 p-3 shadow-sm flex justify-between items-center px-5 bg-black">
       <a href="/" className="w-44 h-15">
-        <img src="/logo.svg" className="w-44 h-15" />
+        <img src="/logo.svg" className="w-44 h-15" alt="logo" />
       </a>
 
       {/* Bouton hamburger pour le mobile */}
