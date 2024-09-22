@@ -1,5 +1,7 @@
 # <p align="center">🌟 EasyTrip 🌟</p>
 
+<img width="2056" alt="Capture d’écran 2024-09-23 à 00 19 44" src="https://github.com/user-attachments/assets/6746ae09-df55-4d36-828b-55035fe63174">
+
 ## 📝 Description
 EasyTrip is an innovative web application that allows you to plan trips in a simple and efficient way. Through the use of artificial intelligence, EasyTrip generates personalized itineraries based on the user's preferences, such as destination, budget, length of stay and desired activities. The application also offers complete management of past and future trips as well as an intuitive interface to offer a smooth and pleasant planning experience. EasyTrip simplifies the organization of road trips by providing tailor-made recommendations, all accessible from a single platform.
 
