@@ -53,7 +53,7 @@ function AutocompleteSearch({ selectProps }) {
         />
       </div>
       <div className="w-full md:w-1/2"> 
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1">
+        <ul className="absolute z-10 bg-white border border-gray-300 rounded mt-1">
           {suggestions.map((city) => (
             <li 
               key={city.geonameId} 
