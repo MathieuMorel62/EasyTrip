@@ -13,7 +13,7 @@ dist
 dist-ssr
 
 # Fichiers locaux
-*.local
+.env.local
 .env
 
 # Fichiers de gestion de versions
