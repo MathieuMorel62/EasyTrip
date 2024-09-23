@@ -43,6 +43,24 @@ EasyTrip uses a variety of modern technologies to provide a smooth and high-perf
 
   ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
 
+## 🏗️ Architectural Diagram
+
+Here is an overview of the overall architecture of the EasyTrip application:
+
+#### Data Flow
+
+This diagram illustrates the flow of data in the application, from user interactions to the display of information on the screen.
+
+<img width="1567" alt="Capture d’écran 2024-09-23 à 12 28 53" src="https://github.com/user-attachments/assets/9d418e4d-b543-4aa0-8d8b-c64442e82b56">
+
+#### Description:
+
+- **User:** Interacts with the front-end interface.
+- **Front-end:** Sends requests to the back-end when an action is performed (for example, trip creation).
+- **Back-end:** Processes requests according to the MVC model, accesses database data and calls external services.
+- **Database:** Stores information about users, travel, hotels, etc.
+- **External Services:** Enrich travel data with additional information (Google Places, GeoNames, Gemini).
+
 ## 🖼️ Mockup
 
 Here are a few mock-ups of the EasyTrip application, illustrating the different pages and their layout.
@@ -155,6 +173,18 @@ npm test
 - **Responsive And Design User Interface:** Enjoy a modern and fluid interface, optimized for use on all types of devices (computers, tablets, smartphones).
 
 - **Profile Customization:** Manage your personal information and travel preferences for an even more personalized experience.
+
+## 🤝 Contribute
+
+Contributions are welcome! Here's how to proceed:
+
+1. **Fork the repository:** Create a copy of the project on your GitHub account.
+2. Clone the forked deposit on your local machine.
+3. Create a branch for your feature or bug fix.
+4. Make the necessary changes and make sure they meet project standards.
+5. Open a Pull Request to submit your contribution.
+
+Thank you for your help and your ideas! 🚀
 
 ## 📬 Contact
 
