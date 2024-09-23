@@ -43,6 +43,10 @@ EasyTrip uses a variety of modern technologies to provide a smooth and high-perf
 
   ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
 
+## 🖼️ Mockup
+
+Here are a few mock-ups of the EasyTrip application, illustrating the different pages and their layout.
+
 ## 🚀 Installation and Configuration
 
 Follow these steps to install and configure EasyTrip on your local machine:
@@ -133,7 +137,21 @@ npm test
 - Customize your profile
   - Go to the `Profile` section to update your personal information, such as your name, email or password.
 
-
 ## 📸 Screenshots
+
+## ✨ Main Features
+
+- **Generate Personalized Itineraries:** Create travel itineraries tailored to your preferences, including suggestions for places to visit, activities to do and restaurants to discover.
+
+- **Intuitive Destination Search:** Use the autocomplete search bar to quickly find popular destinations and points of interest.
+
+- **Travel Management:** Create, view and delete your trips. View all the details of your route in one place.
+
+- **Secure Authentication:** Easily sign in with your Google account or create a classic account to access all the features of the app.
+
+- **Responsive And Design User Interface:** Enjoy a modern and fluid interface, optimized for use on all types of devices (computers, tablets, smartphones).
+
+- **Profile Customization:** Manage your personal information and travel preferences for an even more personalized experience.
+
 
 ## 📞 Contact
