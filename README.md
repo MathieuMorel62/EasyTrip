@@ -46,6 +46,7 @@ EasyTrip uses a variety of modern technologies to provide a smooth and high-perf
 ## 🖼️ Mockup
 
 Here are a few mock-ups of the EasyTrip application, illustrating the different pages and their layout.
+![image](https://github.com/user-attachments/assets/d1e5f014-2dab-4395-97ea-99b5f70ebd4b)
 
 ## 🚀 Installation and Configuration
 
