@@ -140,6 +140,8 @@ npm test
 
 ## 📸 Screenshots
 
+<img width="200" alt="homepage" src="https://github.com/user-attachments/assets/3babe848-0658-4922-923a-c24612fc49bc"> <img width="200" alt="create-trip" src="https://github.com/user-attachments/assets/45318aff-e84a-4b0d-a85a-9bf97801ea85"> <img width="200" alt="Login" src="https://github.com/user-attachments/assets/eca97ce8-d86d-43fb-8fe1-cc2c1f3dcb82"> <img width="200" alt="signin" src="https://github.com/user-attachments/assets/2a994a12-d1db-4015-ac99-bd8a61624236"> <img width="200" alt="homepage connected" src="https://github.com/user-attachments/assets/b84f8471-9e89-42ef-a214-451707ce46b0"> <img width="200" alt="mes trips" src="https://github.com/user-attachments/assets/4f4c5624-5594-4c8e-842d-4566c26a574d"> <img width="200" alt="result 1" src="https://github.com/user-attachments/assets/1b92e2b7-e980-42d2-97a8-eec311169fa3"> <img width="200" alt="result 2" src="https://github.com/user-attachments/assets/8d508547-3857-4bbd-8089-eaf0e8d78c5f"> <img width="200" alt="myinfos" src="https://github.com/user-attachments/assets/f6c906e5-f420-4688-8fc7-a1e77e9650b5"> <img width="200" alt="updateData" src="https://github.com/user-attachments/assets/b3774ecd-591c-48aa-832d-9138655a4a3a"> <img width="200" alt="toast" src="https://github.com/user-attachments/assets/54849276-7283-4522-a66b-c9f8326b7e11">
+
 ## ✨ Main Features
 
 - **Generate Personalized Itineraries:** Create travel itineraries tailored to your preferences, including suggestions for places to visit, activities to do and restaurants to discover.
@@ -154,5 +156,7 @@ npm test
 
 - **Profile Customization:** Manage your personal information and travel preferences for an even more personalized experience.
 
+## 📬 Contact
 
-## 📞 Contact
+- LinkedIn Profile: [Mathieu Morel](https://www.linkedin.com/in/mathieumorel62/)
+- Portfolio WebSite: [Mathieu Morel](https://mathieu-morel.netlify.app)
