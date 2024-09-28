@@ -22,7 +22,7 @@ function CreateTrip() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
+  // fonction pour gérer les changements dans les champs du formulaire
   const handleInputChange = (name, value) => {
     setFormData({
       ...formData,
@@ -34,14 +34,17 @@ function CreateTrip() {
     console.log(formData);
   }, [formData]);
 
+  // fonction pour générer un voyage
   const OnGenerateTrip = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
+    // si l'utilisateur n'est pas connecté, ouvrir la boîte de dialogue de connexion
     if (!user) {
       setOpenDialog(true);
       return;
     }
 
+    // vérifier si tous les champs du formulaire sont remplis
     if (
       !formData?.location ||
       !formData?.nbOfDays ||
@@ -54,6 +57,7 @@ function CreateTrip() {
 
     setLoading(true);
 
+    // construire le prompt final pour l'IA remplacer les variables par les valeurs du formulaire
     const FINAL_PROMPT = AI_PROMPT.replace(
       "{location}",
       `${formData?.location?.name}, ${formData?.location?.adminName1}, ${formData?.location?.lat}, ${formData?.location?.lng}`
@@ -64,14 +68,18 @@ function CreateTrip() {
       .replace("{totalDays}", formData?.nbOfDays);
     console.log(FINAL_PROMPT);
 
+    // envoyer le prompt à l'IA et attendre la réponse
     const result = await chatSession.sendMessage(FINAL_PROMPT);
 
     setLoading(false);
 
+    // récupérer la réponse de l'IA et la convertir en JSON
     const jsonResponse = await result?.response?.text();
     console.log("Réponse de l'IA:", jsonResponse);
 
+
     try {
+      // convertir la réponse en JSON
       const parsedResponse = JSON.parse(jsonResponse);
       const itinerary = parsedResponse?.itinerary || [];
       const hotels = parsedResponse?.hotelOptions || [];
@@ -79,6 +87,7 @@ function CreateTrip() {
       console.log("Itinéraire avant envoi:", itinerary);
       console.log("Hôtels avant envoi:", hotels);
 
+      // créer un objet de données de voyage avec les informations du formulaire et les données de l'itinéraire et des hôtels
       const tripData = {
         budget: formData.budget,
         location: formData.location,
@@ -98,6 +107,7 @@ function CreateTrip() {
         })),
       };
 
+      // envoyer les données du voyage à l'API backend
       const response = await axios.post(
         "http://localhost:5001/api/trips",
         tripData,
@@ -108,9 +118,11 @@ function CreateTrip() {
         }
       );
 
+      // récupérer l'ID du voyage créé
       const tripId = response.data.tripId;
       console.log("Voyage créé avec succès");
 
+      // rediriger l'utilisateur vers la page de visualisation du voyage
       navigate(`/view-trip/${tripId}`);
     } catch (error) {
       console.error("Erreur lors de la création du voyage :", error);
