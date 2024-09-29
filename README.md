@@ -23,6 +23,10 @@ EasyTrip is an innovative web application that allows you to plan trips in a sim
 - **[OAuth](https://oauth.net/)**
 - **[Jest](https://jestjs.io/docs/getting-started)**
 
+## 🎥 Video
+
+https://github.com/user-attachments/assets/11d6d0fe-43f3-47a0-9ef6-91bf7e3c8007
+
 ## 🛠️ Technologies et Outils Utilisés
 
 EasyTrip uses a variety of modern technologies to provide a smooth and high-performance user experience. Here are the main technologies used in the project:
