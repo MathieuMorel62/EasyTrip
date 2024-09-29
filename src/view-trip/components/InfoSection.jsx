@@ -1,7 +1,5 @@
-import { Button } from '../../components/ui/button';
 import PropTypes from 'prop-types';
 import { useEffect, useState, useCallback } from 'react'; // Ajout de useCallback
-import { IoIosSend } from "react-icons/io";
 import { GetPlaceDetails, PHOTO_REF_URL } from '../../service/GlobalApi';
 
 const InfoSection = ({ trip }) => {
