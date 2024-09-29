@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import db from "../config/db.js";
 import { validationResult } from "express-validator";
-import { findUserByEmail } from "../../backend/models/User.js";
+import { findUserByEmail } from "../models/User.js";
 import axios from "axios";
 
 // Fonction pour enregistrer un nouvel utilisateur
