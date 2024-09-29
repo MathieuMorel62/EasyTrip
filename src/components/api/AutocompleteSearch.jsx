@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 // Composant pour la recherche d'autocomplétion de ville
 function AutocompleteSearch({ selectProps }) {
@@ -68,5 +70,9 @@ function AutocompleteSearch({ selectProps }) {
     </div>
   );
 }
+
+AutocompleteSearch.propTypes = {
+  selectProps: PropTypes.object.isRequired,
+};
 
 export default AutocompleteSearch;
