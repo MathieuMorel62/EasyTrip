@@ -4,6 +4,7 @@ import db from "../config/db.js";
 import { validationResult } from "express-validator";
 import { findUserByEmail } from "../models/User.js";
 import axios from "axios";
+import { sendWelcomeEmail } from "../utils/emailService.js";
 
 // Fonction pour enregistrer un nouvel utilisateur
 export const signup = (req, res) => {
@@ -41,6 +42,9 @@ export const signup = (req, res) => {
       const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
         expiresIn: "48h",
       });
+
+      // Envoyer l'email de bienvenue
+      sendWelcomeEmail(email, firstName);
 
       // Renvoyer le token et les informations de l'utilisateur
       res.status(201).json({
