@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react"
 import { useTheme } from "next-themes"
 import { Toaster as Sonner } from "sonner"
