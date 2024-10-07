@@ -28,4 +28,6 @@ PopoverContent.propTypes = {
   sideOffset: PropTypes.number,
 };
 
-export { Popover, PopoverTrigger, PopoverContent }
+const PopoverClose = PopoverPrimitive.Close
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverClose }
