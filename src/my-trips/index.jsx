@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
+import React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import UserTripCardItem from './components/UserTripCardItem';
+
 
 // Fonction pour afficher les trips de l'utilisateur
 function MyTrips() {
