@@ -29,3 +29,6 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+# Dossiers de tests
+coverage
