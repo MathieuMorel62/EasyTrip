@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import { GetPlaceDetails, PHOTO_REF_URL } from '../../service/GlobalApi';
@@ -58,6 +60,7 @@ function UserTripCardItem({ trip, onDelete }) {
         <button 
           onClick={handleMenuOpen} 
           className='text-lg p-2 hover:bg-gray-200 rounded-full cursor-pointer'
+          aria-label='Delete Trip'
         >
           <FaRegTrashCan />
         </button>
@@ -71,7 +74,7 @@ function UserTripCardItem({ trip, onDelete }) {
 
 UserTripCardItem.propTypes = {
   trip: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, 
     location: PropTypes.string.isRequired,
     nbOfDays: PropTypes.number.isRequired,
     budget: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
