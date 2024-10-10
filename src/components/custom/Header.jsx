@@ -51,6 +51,7 @@ function Header() {
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="text-white focus:outline-none"
+          aria-label="menu"
         >
           {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
@@ -115,10 +116,10 @@ function Header() {
 
       {/* Menu mobile */}
       {menuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-black text-white md:hidden flex flex-col items-center gap-3 py-5 z-10">
+        <div className="absolute top-16 left-0 w-full bg-black text-white md:hidden flex flex-col items-center gap-3 py-5 z-10" data-testid="mobile-menu">
           {user ? (
             <>
-              <a href="/create-trip" className="text-white">
+              <a href="/create-trip" className="text-white" data-testid="mobile-create-trip">
                 Créer un Trip
               </a>
               <a href="/my-trips" className="text-white">
