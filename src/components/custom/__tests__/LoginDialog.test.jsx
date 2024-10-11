@@ -20,6 +20,7 @@ describe("LoginDialog", () => {
   const mockOnLoginSuccess = jest.fn();
 
   beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => {});
     jest.clearAllMocks();
     axios.post.mockResolvedValue({
       status: 200,
