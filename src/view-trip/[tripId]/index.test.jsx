@@ -7,6 +7,7 @@ import axios from 'axios';
 import ViewTrip from './index';
 import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
 
+
 jest.mock('axios');
 jest.mock('../../service/GlobalApi', () => ({
   GetPlaceDetails: jest.fn().mockResolvedValue({
