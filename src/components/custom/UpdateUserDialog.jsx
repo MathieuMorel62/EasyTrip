@@ -27,7 +27,7 @@ const UpdateUserDialog = ({ open, onOpenChange, onUpdateSuccess }) => {
 
   // Récupération des données de l'utilisateur à partir du localStorage
   useEffect(() => {
-    // Si la modale est ouverte, récupérer les données de l'utilisateur à partir du localStorage
+    // Si la modale est ouverte, récupére les données de l'utilisateur à partir du localStorage
     if (open) {
       const userData = JSON.parse(localStorage.getItem("user"));
 
