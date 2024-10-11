@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useEffect, useState, useCallback } from 'react'; // Ajout de useCallback
+import { useEffect, useState, useCallback } from 'react';
 import { GetPlaceDetails, PHOTO_REF_URL } from '../../service/GlobalApi';
 
 const InfoSection = ({ trip }) => {
