@@ -1,86 +1,375 @@
+/* eslint-disable no-undef */
 // eslint-disable-next-line no-unused-vars
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import React, { act } from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginDialog from "../LoginDialog";
 import axios from "axios";
-import { jest, describe, test, expect, beforeEach } from '@jest/globals';
+import { describe, test, expect, beforeEach } from "@jest/globals";
+import { toast } from "sonner";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("axios");
+
+jest.mock("sonner", () => ({
+  toast: jest.fn(),
+}));
 
 describe("LoginDialog", () => {
   const mockOnOpenChange = jest.fn();
   const mockOnLoginSuccess = jest.fn();
 
   beforeEach(() => {
-    // Mock de la réponse de l'API pour la connexion
-    axios.post.mockResolvedValueOnce({ status: 200, data: { /* données utilisateur */ } });
-    // Mock de la réponse de l'API pour l'inscription
-    axios.post.mockResolvedValueOnce({ status: 201, data: { /* données utilisateur */ } });
-    render(
-      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
-        <LoginDialog open={true} onOpenChange={mockOnOpenChange} onLoginSuccess={mockOnLoginSuccess} />
-      </GoogleOAuthProvider>
-    );
+    jest.clearAllMocks();
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        /* données utilisateur */
+      },
+    });
   });
 
   test("affiche le titre de connexion", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
     const connectTextElements = screen.getAllByText(/Se connecter avec/i);
-    expect(connectTextElements.length).toBeGreaterThan(0); // Vérifie qu'il y a au moins un élément
+    expect(connectTextElements.length).toBeGreaterThan(0);
     expect(screen.getByPlaceholderText(/Email/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Mot de passe/i)).toBeInTheDocument();
   });
 
-  test("test le champ email", async () => {
-    fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: "test@example.com" } });
-    fireEvent.change(screen.getByPlaceholderText(/Mot de passe/i), { target: { value: "password" } });
+  test("test le champ email", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/Email/i), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/Mot de passe/i), {
+      target: { value: "password" },
+    });
     fireEvent.click(screen.getByText(/Connexion avec Email/i));
   });
 
   test("test le bouton d'inscription", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
     fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
     const createAccountElements = screen.getAllByText(/Créer un compte/i);
-    expect(createAccountElements.length).toBeGreaterThan(0); // Vérifie qu'il y a au moins un élément
+    expect(createAccountElements.length).toBeGreaterThan(0);
   });
 
-  test("test l'inscription d'un nouvel utilisateur", async () => {
+  test("test l'inscription d'un nouvel utilisateur", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
     fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
-    fireEvent.change(screen.getByPlaceholderText(/Prénom/i), { target: { value: "John" } });
+    fireEvent.change(screen.getByPlaceholderText(/Prénom/i), {
+      target: { value: "John" },
+    });
 
     const nomInputs = screen.getAllByPlaceholderText(/Nom/i);
-    fireEvent.change(nomInputs[0], { target: { value: "Doe" } }); // Sélectionne le premier champ "Nom"
+    fireEvent.change(nomInputs[0], { target: { value: "Doe" } });
 
-    fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: "john.doe@example.com" } });
+    fireEvent.change(screen.getByTestId("signup-email"), {
+      target: { value: "john.doe@example.com" },
+    });
 
-    const passwordInputs = screen.getAllByPlaceholderText(/Mot de passe/i);
-    fireEvent.change(passwordInputs[0], { target: { value: "password" } }); // Sélectionne le premier champ "Mot de passe"
+    fireEvent.change(screen.getByTestId("signup-password"), {
+      target: { value: "password" },
+    });
 
-    fireEvent.change(screen.getByPlaceholderText(/Confirmer le mot de passe/i), { target: { value: "password" } });
+    fireEvent.change(screen.getByTestId("signup-confirm-password"), {
+      target: { value: "password" },
+    });
 
-    const createAccountButtons = screen.getAllByText(/Créer un compte/i);
-    fireEvent.click(createAccountButtons[0]); // Sélectionne le premier bouton "Créer un compte"
+    // Cible le bouton "Créer un compte" spécifique
+    const createAccountButton = screen.getByRole("button", {
+      name: /Créer un compte/i,
+    });
+    fireEvent.click(createAccountButton);
   });
 
   test("test l'affichage du formulaire d'inscription", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
     fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
     expect(screen.getByPlaceholderText(/Prénom/i)).toBeInTheDocument();
 
-    // Utilisez getAllByPlaceholderText pour récupérer tous les éléments "Nom"
     const nomInputs = screen.getAllByPlaceholderText(/Nom/i);
-    expect(nomInputs.length).toBeGreaterThan(0); // Vérifie qu'il y a au moins un champ "Nom"
-    // Vérifiez que le premier champ "Nom" est dans le document
+    expect(nomInputs.length).toBeGreaterThan(0);
     expect(nomInputs[0]).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Confirmer le mot de passe/i)).toBeInTheDocument();
+    expect(screen.getByTestId("signup-confirm-password")).toBeInTheDocument();
   });
 
   test("test la fonction de connexion avec un email et un mot de passe", async () => {
-    fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: "test@example.com" } });
-    fireEvent.change(screen.getByPlaceholderText(/Mot de passe/i), { target: { value: "password" } });
-    fireEvent.click(screen.getByText(/Connexion avec Email/i));
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/Email/i), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/Mot de passe/i), {
+      target: { value: "password" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Connexion avec Email/i));
+    });
+
     expect(mockOnLoginSuccess).toHaveBeenCalled();
   });
 
-  test("test la fonction de connexion avec Google", async () => {
+  test("affiche une erreur lors de la connexion avec des identifiants invalides", async () => {
+    axios.post.mockRejectedValueOnce({
+      response: {
+        status: 401,
+        data: {
+          message: "Invalid credentials",
+        },
+      },
+    });
+
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.change(screen.getByTestId("login-email"), {
+      target: { value: "wrong@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("login-password"), {
+      target: { value: "wrongpassword" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Connexion avec Email/i));
+    });
+
+    expect(toast).toHaveBeenCalledWith(
+      "Erreur lors de la connexion. Veuillez réessayer."
+    );
+  });
+
+  test("test la fonction de connexion avec Google", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
     fireEvent.click(screen.getByText(/Connexion avec Google/i));
+  });
+
+  test("affiche des erreurs de validation pour les champs d'inscription manquants ou invalides", async () => {
+    axios.post.mockRejectedValueOnce({
+      response: {
+        status: 400,
+        data: {
+          errors: [
+            { msg: "Le prénom est obligatoire" },
+            { msg: "Le nom est obligatoire" },
+            { msg: "Email invalide" },
+          ],
+        },
+      },
+    });
+
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={() => {}}
+          onLoginSuccess={() => {}}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    await userEvent.click(screen.getByTestId("signup-link"));
+
+    const createAccountButton = await screen.findByRole("button", {
+      name: /Créer un compte/i,
+    });
+
+    await userEvent.click(createAccountButton);
+
+    await waitFor(() => {
+      expect(toast).toHaveBeenCalledWith("Le prénom est obligatoire");
+      expect(toast).toHaveBeenCalledWith("Le nom est obligatoire");
+      expect(toast).toHaveBeenCalledWith("Email invalide");
+    });
+  });
+
+  test("affiche une erreur lorsque les mots de passe ne correspondent pas lors de l'inscription", async () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
+
+    fireEvent.change(screen.getByPlaceholderText(/Prénom/i), {
+      target: { value: "John" },
+    });
+    fireEvent.change(screen.getAllByPlaceholderText(/Nom/i)[0], {
+      target: { value: "Doe" },
+    });
+    fireEvent.change(screen.getByTestId("signup-email"), {
+      target: { value: "john.doe@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("signup-password"), {
+      target: { value: "password1" },
+    });
+    fireEvent.change(screen.getByTestId("signup-confirm-password"), {
+      target: { value: "password2" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Créer un compte/i }));
+    });
+
+    expect(toast).toHaveBeenCalledWith(
+      "Les mots de passe ne correspondent pas"
+    );
+  });
+
+  test("affiche une erreur lorsque les mots de passe ne correspondent pas lors de l'inscription", async () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
+
+    fireEvent.change(screen.getByPlaceholderText(/Prénom/i), {
+      target: { value: "John" },
+    });
+    fireEvent.change(screen.getAllByPlaceholderText(/Nom/i)[0], {
+      target: { value: "Doe" },
+    });
+    fireEvent.change(screen.getByTestId("signup-email"), {
+      target: { value: "john.doe@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("signup-password"), {
+      target: { value: "password1" },
+    });
+    fireEvent.change(screen.getByTestId("signup-confirm-password"), {
+      target: { value: "password2" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Créer un compte/i }));
+    });
+
+    expect(toast).toHaveBeenCalledWith(
+      "Les mots de passe ne correspondent pas"
+    );
+  });
+
+  test("affiche une erreur générale lorsque l'inscription échoue sans erreurs spécifiques", async () => {
+    axios.post.mockRejectedValueOnce(new Error("Network Error"));
+
+    console.log = jest.fn();
+
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={() => {}}
+          onLoginSuccess={() => {}}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
+
+    fireEvent.change(screen.getByPlaceholderText(/Prénom/i), {
+      target: { value: "John" },
+    });
+    fireEvent.change(screen.getAllByPlaceholderText(/Nom/i)[0], {
+      target: { value: "Doe" },
+    });
+    fireEvent.change(screen.getByTestId("signup-email"), {
+      target: { value: "john.doe@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("signup-password"), {
+      target: { value: "password" },
+    });
+    fireEvent.change(screen.getByTestId("signup-confirm-password"), {
+      target: { value: "password" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Créer un compte/i }));
+    });
+
+    expect(console.log).toHaveBeenCalled();
+    expect(toast).toHaveBeenCalledWith(
+      "Erreur lors de l'inscription. Veuillez réessayer."
+    );
   });
 });
