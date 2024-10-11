@@ -25,6 +25,7 @@ jest.mock('../components/UserTripCardItem', () => ({ trip, onDelete }) => (
 
 describe('Composant MyTrips', () => {
   beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     // Simule un utilisateur authentifié
     localStorage.setItem('user', JSON.stringify({ token: 'fake-token' }));
 
