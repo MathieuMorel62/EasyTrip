@@ -133,7 +133,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }) => {
             </button>
           </DialogClose>
           <DialogTitle>
-            <img src="/logo-black.svg" className="w-48 ml-[-10px]" />
+            <img src="/logo-black.svg" alt="logo" className="w-48 ml-[-10px]" />
           </DialogTitle>
           <DialogDescription />
           <div id="custom-description">
@@ -170,6 +170,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }) => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     className="w-full"
+                    data-testid="signup-firstname"
                   />
                   <Input
                     type="text"
@@ -177,6 +178,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }) => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     className="w-full"
+                    data-testid="signup-lastname"
                   />
                 </div>
               )}
@@ -188,18 +190,21 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full"
+                    data-testid={isSignUp ? "signup-email" : "login-email"}
                   />
                 )}
                 <PasswordInput
                   placeholder="Mot de passe"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  data-testid={isSignUp ? "signup-password" : "login-password"}
                 />
                 {isSignUp && (
                   <PasswordInput
                     placeholder="Confirmer le mot de passe"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    data-testid="signup-confirm-password"
                   />
                 )}
               </div>
@@ -211,6 +216,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full"
+                    data-testid={isSignUp ? "signup-email" : "login-email"}
                   />
                 </div>
               )}
@@ -240,6 +246,7 @@ const LoginDialog = ({ open, onOpenChange, onLoginSuccess }) => {
                   <span
                     className="text-blue-500 cursor-pointer"
                     onClick={() => setIsSignUp(true)}
+                    data-testid="signup-link"
                   >
                     Inscrivez-vous ici
                   </span>
