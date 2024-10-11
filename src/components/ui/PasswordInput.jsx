@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-const PasswordInput = ({ value, onChange, placeholder }) => {
+const PasswordInput = ({ value, onChange, placeholder, "data-testid": dataTestId }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
@@ -20,6 +20,7 @@ const PasswordInput = ({ value, onChange, placeholder }) => {
         onChange={onChange}
         placeholder={placeholder}
         className="pr-10 w-full"
+        data-testid={dataTestId}
       />
       <div
         role="button"
@@ -36,6 +37,7 @@ PasswordInput.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  "data-testid": PropTypes.string,
 };
 
 export default PasswordInput;
