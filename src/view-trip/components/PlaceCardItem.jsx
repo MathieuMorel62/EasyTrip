@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import React from 'react';
 import { Button } from '../../components/ui/button';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -15,7 +17,6 @@ function PlaceCardItem({ place, trip }) {
         textQuery: place.placeName,
       }
 
-      // eslint-disable-next-line no-unused-vars
       const result = await GetPlaceDetails(data).then((response) => {
         const PhotoUrl = PHOTO_REF_URL.replace('{NAME}', response.data.places[0].photos[0].name);
         setPhotoUrl(PhotoUrl);
