@@ -13,4 +13,16 @@ describe('Auth Routes', () => {
         expect(authRoutes).toBeDefined();
         expect(typeof authRoutes.stack).toBe('object');
     });
+
+    test('doit définir les routes', () => {
+        const router = authRoutes;
+        const routes = router.stack.map(layer => layer.route.path);
+        expect(routes).toEqual(expect.arrayContaining([
+            '/signup',
+            '/login',
+            '/google-login',
+            '/update',
+            '/delete'
+        ]));
+    });
 });
