@@ -15,7 +15,9 @@ jest.mock('jsonwebtoken');
 jest.mock('../../config/db', () => ({
   query: jest.fn(),
 }));
-jest.mock('express-validator');
+jest.mock('express-validator', () => ({
+  validationResult: jest.fn()
+}));
 jest.mock('../../models/User');
 jest.mock('axios');
 jest.mock('../../utils/emailService');
