@@ -71,6 +71,7 @@
     "jest-fetch-mock": "^3.0.3",
     "postcss": "^8.4.41",
     "react-router-dom": "^6.26.2",
+    "supertest": "^7.0.0",
     "tailwindcss": "^3.4.9",
     "vite": "^5.4.0",
     "whatwg-fetch": "^3.6.20"
