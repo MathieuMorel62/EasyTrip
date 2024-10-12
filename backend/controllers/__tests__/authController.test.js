@@ -3,7 +3,6 @@ import { signup, login, googleLogin, updateUser, deleteUser } from '../authContr
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import db from '../../config/db';
-import { validationResult } from 'express-validator';
 import { findUserByEmail } from '../../models/User';
 import axios from 'axios';
 import { sendWelcomeEmail } from '../../utils/emailService';
@@ -15,9 +14,16 @@ jest.mock('jsonwebtoken');
 jest.mock('../../config/db', () => ({
   query: jest.fn(),
 }));
+
+const mockValidationResult = {
+  isEmpty: jest.fn(),
+  array: jest.fn()
+};
+
 jest.mock('express-validator', () => ({
-  validationResult: jest.fn()
+  validationResult: jest.fn(() => mockValidationResult)
 }));
+
 jest.mock('../../models/User');
 jest.mock('axios');
 jest.mock('../../utils/emailService');
@@ -43,11 +49,15 @@ describe('authController', () => {
       json: jest.fn(),
       send: jest.fn()
     };
+
+    // Ajoutez ceci pour réinitialiser le mock de validationResult
+    mockValidationResult.isEmpty.mockReset();
+    mockValidationResult.array.mockReset();
   });
 
   describe('signup', () => {
     it('devrait crer un nouvel utilisateur et renvoyer un token', async () => {
-      validationResult.mockReturnValue({ isEmpty: () => true });
+      mockValidationResult.isEmpty.mockReturnValue(true);
       bcrypt.hashSync.mockReturnValue('hashedPassword');
       jwt.sign.mockReturnValue('testToken');
       db.query.mockImplementation((query, params, callback) => {
@@ -80,7 +90,8 @@ describe('authController', () => {
     });
 
     it('devrait renvoyer une erreur 400 si la validation échoue', async () => {
-      validationResult.mockReturnValue({ isEmpty: () => false, array: () => [{ msg: 'Erreur de validation' }] });
+      mockValidationResult.isEmpty.mockReturnValue(false);
+      mockValidationResult.array.mockReturnValue([{ msg: 'Erreur de validation' }]);
 
       await signup(req, res);
 
@@ -89,7 +100,7 @@ describe('authController', () => {
     });
 
     it('devrait renvoyer une erreur 500 si l\'insertion dans la base de données échoue', async () => {
-      validationResult.mockReturnValue({ isEmpty: () => true });
+      mockValidationResult.isEmpty.mockReturnValue(true);
       db.query.mockImplementation((query, params, callback) => {
         if (query.startsWith('INSERT')) {
           callback(new Error('Erreur d\'insertion'));
