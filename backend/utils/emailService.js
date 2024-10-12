@@ -29,10 +29,15 @@ export const sendWelcomeEmail = (to, firstName) => {
           <p>Cordialement,<br>L'équipe EasyTrip</p>`,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.error('Erreur lors de l\'envoi de l\'email:', error);
-    }
-    console.log('Email envoyé:', info.response);
+  // Modification : Retourner une Promise pour gérer l'asynchronisme
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Erreur lors de l\'envoi de l\'email:', error);
+        return reject(error);
+      }
+      console.log('Email envoyé:', info.response);
+      resolve(info);
+    });
   });
 };
