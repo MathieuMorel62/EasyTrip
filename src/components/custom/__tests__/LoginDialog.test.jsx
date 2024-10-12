@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { act } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import LoginDialog from "../LoginDialog";
 import axios from "axios";
 import { describe, test, expect, beforeEach } from "@jest/globals";
@@ -13,6 +13,12 @@ jest.mock("axios");
 
 jest.mock("sonner", () => ({
   toast: jest.fn(),
+}));
+
+jest.mock("@react-oauth/google", () => ({
+  // eslint-disable-next-line react/prop-types
+  GoogleOAuthProvider: ({ children }) => <div>{children}</div>,
+  useGoogleLogin: jest.fn(),
 }));
 
 describe("LoginDialog", () => {
@@ -372,5 +378,146 @@ describe("LoginDialog", () => {
     expect(toast).toHaveBeenCalledWith(
       "Erreur lors de l'inscription. Veuillez réessayer."
     );
+  });
+
+  // Test pour vérifier l'initialisation des états
+  test("initialise correctement les états", () => {
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    // Ouvrir le formulaire d'inscription avant de vérifier les états
+    fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
+
+    expect(screen.getByTestId("signup-firstname")).toHaveValue("");
+    expect(screen.getByTestId("signup-lastname")).toHaveValue("");
+    expect(screen.getByTestId("signup-email")).toHaveValue("");
+    expect(screen.getByTestId("signup-password")).toHaveValue("");
+    expect(screen.getByTestId("signup-confirm-password")).toHaveValue("");
+  });
+
+  // Test pour la fonction handleEmailLogin avec succès
+  test("handleEmailLogin réussit avec des informations valides", async () => {
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { /* données utilisateur valides */ },
+    });
+
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.change(screen.getByTestId("login-email"), {
+      target: { value: "valid@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("login-password"), {
+      target: { value: "validpassword" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Connexion avec Email/i));
+    });
+
+    expect(localStorage.getItem("user")).toBeTruthy();
+    expect(mockOnLoginSuccess).toHaveBeenCalled();
+  });
+
+  // Test pour handleSignUp avec mots de passe correspondants
+  test("handleSignUp réussit lorsque les mots de passe correspondent", async () => {
+    axios.post.mockResolvedValueOnce({
+      status: 201,
+      data: { /* données utilisateur inscrits */ },
+    });
+
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    fireEvent.click(screen.getByText(/Inscrivez-vous ici/i));
+    fireEvent.change(screen.getByTestId("signup-firstname"), {
+      target: { value: "Jane" },
+    });
+    fireEvent.change(screen.getByTestId("signup-lastname"), {
+      target: { value: "Doe" },
+    });
+    fireEvent.change(screen.getByTestId("signup-email"), {
+      target: { value: "jane.doe@example.com" },
+    });
+    fireEvent.change(screen.getByTestId("signup-password"), {
+      target: { value: "securepassword" },
+    });
+    fireEvent.change(screen.getByTestId("signup-confirm-password"), {
+      target: { value: "securepassword" },
+    });
+
+    await act(async () => {
+      // Utiliser getByRole avec le nom spécifique du bouton
+      fireEvent.click(screen.getByRole("button", { name: /Créer un compte/i }));
+    });
+
+    expect(localStorage.getItem("user")).toBeTruthy();
+    expect(mockOnLoginSuccess).toHaveBeenCalled();
+  });
+
+  // Test pour GetUserProfile avec réponse réussie
+  test("GetUserProfile récupère et enregistre le profil utilisateur avec succès", async () => {
+    const mockTokenInfo = { access_token: "valid_token" };
+    
+    // Configurer le mock de useGoogleLogin pour appeler onSuccess avec mockTokenInfo
+    useGoogleLogin.mockImplementation(({ onSuccess }) => () => {
+      onSuccess(mockTokenInfo);
+    });
+
+    axios.get.mockResolvedValueOnce({ data: { /* profil utilisateur */ } });
+    axios.post.mockResolvedValueOnce({
+      status: 200,
+      data: { /* données utilisateur */ },
+    });
+
+    render(
+      <GoogleOAuthProvider clientId="YOUR_CLIENT_ID">
+        <LoginDialog
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          onLoginSuccess={mockOnLoginSuccess}
+        />
+      </GoogleOAuthProvider>
+    );
+
+    // Simuler la connexion avec Google
+    fireEvent.click(screen.getByText(/Connexion avec Google/i));
+
+    // Attendre les appels axios
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringContaining("https://www.googleapis.com/oauth2/v1/userinfo"),
+        expect.any(Object)
+      );
+      expect(axios.post).toHaveBeenCalledWith(
+        'http://localhost:5001/api/auth/google-login',
+        { token: mockTokenInfo.access_token }
+      );
+    });
+
+    expect(localStorage.getItem("user")).toBeTruthy();
+    expect(mockOnLoginSuccess).toHaveBeenCalled();
   });
 });
