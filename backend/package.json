@@ -29,6 +29,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.5.0"
+    "@testing-library/jest-dom": "^6.5.0",
+    "express-validator": "^6.14.0"
   }
 }
