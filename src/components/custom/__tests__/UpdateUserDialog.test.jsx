@@ -266,4 +266,102 @@ describe("UpdateUserDialog", () => {
     expect(screen.getByText(/Annuler les modifications/i)).toBeInTheDocument();
   });
   
+  test("mise à jour réussie de l'utilisateur", async () => {
+    const mockUpdatedUser = {
+      email: "updated@example.com",
+      firstName: "Updated",
+      lastName: "User",
+    };
+  
+    axios.put.mockResolvedValue({
+      status: 200,
+      data: mockUpdatedUser,
+    });
+
+    render(
+      <UpdateUserDialog
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        onUpdateSuccess={mockOnUpdateSuccess}
+      />
+    );
+
+    fireEvent.click(screen.getByText(/Modifier mon profil/i));
+
+    fireEvent.change(screen.getByTestId("firstName-input"), {
+      target: { value: mockUpdatedUser.firstName },
+    });
+    fireEvent.change(screen.getByTestId("lastName-input"), {
+      target: { value: mockUpdatedUser.lastName },
+    });
+    fireEvent.change(screen.getByTestId("email-input"), {
+      target: { value: mockUpdatedUser.email },
+    });
+    fireEvent.change(screen.getByLabelText(/Nouveau mot de passe/i), {
+      target: { value: "newpassword" },
+    });
+    fireEvent.change(screen.getByLabelText(/Confirmer le mot de passe/i), {
+      target: { value: "newpassword" },
+    });
+
+    fireEvent.click(screen.getByText(/Enregistrer les modifications/i));
+
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith(
+        "http://localhost:5001/api/auth/update",
+        {
+          email: mockUpdatedUser.email,
+          firstName: mockUpdatedUser.firstName,
+          lastName: mockUpdatedUser.lastName,
+          password: "newpassword",
+        },
+        {
+          headers: {
+            Authorization: "Bearer mockToken",
+          },
+        }
+      );
+    });
+
+    expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+    expect(mockOnUpdateSuccess).toHaveBeenCalled();
+  });
+
+  test("erreur de suppression du compte utilisateur", async () => {
+    axios.delete.mockRejectedValue(new Error("Erreur de suppression"));
+
+    render(
+      <UpdateUserDialog
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        onUpdateSuccess={mockOnUpdateSuccess}
+      />
+    );
+
+    const deleteButton = screen.getByTestId("delete-button");
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      expect(toast).toHaveBeenCalledWith(
+        "Erreur lors de la suppression. Veuillez réessayer."
+      );
+    });
+  });
+
+  test("annulation de la suppression du compte utilisateur", async () => {
+    window.confirm = jest.fn(() => false);
+
+    render(
+      <UpdateUserDialog
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        onUpdateSuccess={mockOnUpdateSuccess}
+      />
+    );
+
+    const deleteButton = screen.getByTestId("delete-button");
+    fireEvent.click(deleteButton);
+
+    expect(axios.delete).not.toHaveBeenCalled();
+  });
 });
