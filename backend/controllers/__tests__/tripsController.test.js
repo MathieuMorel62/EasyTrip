@@ -1,15 +1,40 @@
-import { createTrip, getTrips, getTripById, deleteTripById } from '../tripsController.js';
-import db from '../../config/db.js';
-import { v4 as uuidv4 } from 'uuid';
-import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals';
+/**
+ * Ce fichier contient des tests unitaires pour le contrôleur de voyages.
+ * Les tests vérifient le bon fonctionnement des fonctions de création, récupération et suppression de voyages.
+ * Chaque bloc de tests est organisé par fonction et couvre les cas de succès ainsi que les erreurs potentielles.
+*/
 
+import { jest } from '@jest/globals';
 
-jest.mock('../../config/db.js');
+const mockConnect = jest.fn();
+const mockQuery = jest.fn();
+const mockConnection = {
+  connect: mockConnect,
+  query: mockQuery,
+};
+
+jest.mock('mysql2', () => ({
+  createConnection: jest.fn(() => mockConnection)
+}));
+
+jest.mock('../../config/db.js', () => ({
+  __esModule: true,
+  default: {
+    query: jest.fn((query, values, callback) => callback(null, []))
+  }
+}));
+
 jest.mock('uuid');
 
-describe('Contrôleur de voyages', () => {
-  let req, res;
+import { v4 as uuidv4 } from 'uuid';
+import db from '../../config/db.js';  // Import du mock
+import { createTrip, getTrips, getTripById, deleteTripById } from '../tripsController.js';
+import { describe, it, expect, beforeEach } from '@jest/globals';
 
+
+describe('Tests pour le contrôleur de voyages', () => {
+  let req, res;
+  // Réinitialise les mocks avant chaque test
   beforeEach(() => {
     req = {
       body: {},
@@ -20,17 +45,15 @@ describe('Contrôleur de voyages', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn()
     };
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('createTrip', () => {
-    it('devrait créer un nouveau voyage avec succès', () => {
+
+  describe('Tests pour la création d\'un voyage', () => {
+    it('devrait créer un voyage avec succès et retourner un message de confirmation', () => {
       const mockTripId = 'trip123';
       uuidv4.mockReturnValue(mockTripId);
-      
+      // Données de test
       req.body = {
         budget: 1000,
         location: { name: 'Paris' },
@@ -39,14 +62,15 @@ describe('Contrôleur de voyages', () => {
         itinerary: [],
         hotels: []
       };
-
-      // Simule le succès pour toutes les requêtes
+      // Mock de la fonction query
       db.query.mockImplementation((query, values, callback) => {
         callback(null);
       });
 
+      // Appelle la fonction à tester
       createTrip(req, res);
 
+      // Vérifie que la fonction query a été appelée
       expect(db.query).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
@@ -55,8 +79,8 @@ describe('Contrôleur de voyages', () => {
       }));
     });
 
-    it('devrait gérer les erreurs lors de la création du voyage', () => {
-      // Ajoute un corps de requête valide
+
+    it('devrait retourner une erreur 500 si une erreur de base de données se produit lors de la création', () => {
       req.body = {
         budget: 1000,
         location: { name: 'Paris' },
@@ -66,6 +90,7 @@ describe('Contrôleur de voyages', () => {
         hotels: []
       };
 
+      // Mock de la fonction query
       db.query.mockImplementation((query, values, callback) => {
         callback(new Error('Erreur de base de données'));
       });
@@ -76,7 +101,8 @@ describe('Contrôleur de voyages', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Erreur lors de la création du voyage' });
     });
 
-    it('devrait gérer les erreurs lors de la création de la localisation', () => {
+
+    it('devrait retourner une erreur 500 si une erreur de localisation se produit lors de la création', () => {
       req.body = {
         budget: 1000,
         location: { name: 'Paris' },
@@ -98,7 +124,8 @@ describe('Contrôleur de voyages', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Erreur lors de la création de la localisation' });
     });
 
-    it('devrait gérer les erreurs lors de la création de l\'itinéraire', () => {
+
+    it('devrait retourner une erreur 500 si une erreur d\'itinéraire se produit lors de la création', () => {
       req.body = {
         budget: 1000,
         location: { name: 'Paris' },
@@ -123,21 +150,25 @@ describe('Contrôleur de voyages', () => {
     });
   });
 
-  describe('getTrips', () => {
-    it('devrait récupérer tous les voyages d\'un utilisateur', () => {
+
+  describe('Tests pour la récupération des voyages', () => {
+    it('devrait retourner la liste des voyages avec succès', () => {
       const mockTrips = [{ id: 'trip1' }, { id: 'trip2' }];
       db.query.mockImplementation((query, values, callback) => {
         callback(null, mockTrips);
       });
 
+      // Appelle la fonction à tester
       getTrips(req, res);
 
+      // Vérifie que la fonction query a été appelée
       expect(db.query).toHaveBeenCalledTimes(1);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(mockTrips);
     });
 
-    it('devrait gérer les erreurs lors de la récupération des voyages', () => {
+
+    it('devrait retourner une erreur 500 si une erreur de base de données se produit lors de la récupération', () => {
       db.query.mockImplementation((query, values, callback) => {
         callback(new Error('Erreur de base de données'));
       });
@@ -148,7 +179,8 @@ describe('Contrôleur de voyages', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Erreur lors de la récupération des voyages' });
     });
 
-    it('devrait retourner un tableau vide si l\'utilisateur n\'a pas de voyages', () => {
+
+    it('devrait retourner un tableau vide si aucun voyage n\'est trouvé', () => {
       db.query.mockImplementation((query, values, callback) => {
         callback(null, []);
       });
@@ -161,8 +193,9 @@ describe('Contrôleur de voyages', () => {
     });
   });
 
-  describe('getTripById', () => {
-    it('devrait récupérer un voyage spécifique par ID', () => {
+
+  describe('Tests pour la récupération d\'un voyage par ID', () => {
+    it('devrait retourner un voyage existant avec succès', () => {
       const mockTrip = {
         id: 'trip123',
         userId: 'user123',
@@ -188,6 +221,7 @@ describe('Contrôleur de voyages', () => {
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining(mockTrip));
     });
 
+
     it('devrait retourner une erreur 404 si le voyage n\'est pas trouvé', () => {
       db.query.mockImplementation((query, values, callback) => {
         callback(null, []);
@@ -201,7 +235,8 @@ describe('Contrôleur de voyages', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Voyage non trouvé' });
     });
 
-    it('devrait gérer les erreurs de base de données lors de la récupération d\'un voyage', () => {
+
+    it('devrait retourner une erreur 500 si une erreur de base de données se produit lors de la récupération', () => {
       db.query.mockImplementation((query, values, callback) => {
         callback(new Error('Erreur de base de données'));
       });
@@ -215,8 +250,9 @@ describe('Contrôleur de voyages', () => {
     });
   });
 
-  describe('deleteTripById', () => {
-    it('devrait supprimer un voyage spécifique par ID', () => {
+
+  describe('Tests pour la suppression d\'un voyage par ID', () => {
+    it('devrait supprimer un voyage avec succès', () => {
       db.query.mockImplementation((query, values, callback) => {
         callback(null, { affectedRows: 1 });
       });
@@ -229,6 +265,7 @@ describe('Contrôleur de voyages', () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ message: 'Voyage supprimé avec succès' });
     });
+
 
     it('devrait retourner une erreur 404 si le voyage à supprimer n\'est pas trouvé', () => {
       db.query.mockImplementation((query, values, callback) => {
@@ -243,7 +280,8 @@ describe('Contrôleur de voyages', () => {
       expect(res.json).toHaveBeenCalledWith({ error: 'Voyage non trouvé' });
     });
 
-    it('devrait gérer les erreurs de base de données lors de la suppression d\'un voyage', () => {
+
+    it('devrait retourner une erreur 500 si une erreur de base de données se produit lors de la suppression', () => {
       db.query.mockImplementation((query, values, callback) => {
         callback(new Error('Erreur de base de données'));
       });
