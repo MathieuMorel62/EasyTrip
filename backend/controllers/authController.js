@@ -4,7 +4,7 @@ import db from "../config/db.js";
 import { validationResult } from "express-validator";
 import { findUserByEmail } from "../models/User.js";
 import axios from "axios";
-import { sendWelcomeEmail } from "../utils/emailService.js";
+import { sendWelcomeEmail, sendPasswordChangeEmail } from "../utils/emailService.js";
 
 // Fonction pour enregistrer un nouvel utilisateur
 export const signup = (req, res) => {
@@ -178,6 +178,9 @@ export const googleLogin = async (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: "24h" }
               );
+
+              // Envoi d'un email à l'utilisateur pour changer son mot de passe
+              sendPasswordChangeEmail(email, randomPassword);
 
               // Renvoi du token et des informations utilisateur
               res.status(201).json({
