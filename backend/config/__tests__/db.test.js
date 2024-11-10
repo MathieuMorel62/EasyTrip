@@ -1,78 +1,95 @@
 /* eslint-disable no-undef */
-import mysql from 'mysql2/promise';
-import db from '../db';
+import 'dotenv/config';
+import mysql from 'mysql2';
 import { describe, test, expect, beforeEach } from '@jest/globals';
 
+/**
+ * Tests pour le module de base de données.
+ * Ces tests vérifient la connexion à la base de données et le comportement des requêtes.
+ */
 
-// Mock de mysql2/promise
-jest.mock('mysql2/promise', () => ({
-  createConnection: jest.fn(),
+const mockConnect = jest.fn();
+const mockQuery = jest.fn();
+const mockConnection = {
+  connect: mockConnect,
+  query: mockQuery,
+};
+
+// Mock du module mysql2 pour simuler la connexion et les requêtes
+jest.mock('mysql2', () => ({
+  createConnection: jest.fn(() => mockConnection)
 }));
 
-describe('Module de base de données', () => {
-  let mockConnection;
 
+describe('Tests de connexion et de requêtes de la base de données', () => {
   beforeEach(() => {
-    // Réinitialise les mocks avant chaque test
     jest.clearAllMocks();
-    
-    // Mock pour la connexion
-    mockConnection = {
-      connect: jest.fn(),
-      query: jest.fn(),
-    };
-    
-    // Configuration du mock de createConnection pour retourner notre mockConnection
-    mysql.createConnection.mockResolvedValue(mockConnection);
-    
-    // Réinitialise la connexion du module db
-    db.connection = null;
+    // Simule une connexion réussie
+    mockConnect.mockImplementation(cb => cb(null));
+    // Simule une requête réussie retournant un tableau vide
+    mockQuery.mockImplementation((sql, params, cb) => cb(null, []));
   });
 
-  test('devrait se connecter à la base de données avec succès', async () => {
-    await db.connect();
 
-    expect(mysql.createConnection).toHaveBeenCalledWith({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+  test('doit établir une connexion à la base de données avec les bonnes configurations', () => {
+    jest.isolateModules(() => {
+      require('../db');
+      // Vérifie que la méthode createConnection a été appelée avec les bonnes informations 
+      expect(mysql.createConnection).toHaveBeenCalledWith({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+      });
+      // Vérifie que la méthode connect a été appelée
+      expect(mockConnect).toHaveBeenCalled();
     });
-    expect(mockConnection.connect).toHaveBeenCalled();
-    expect(db.connection).toBe(mockConnection);
   });
 
-  test('devrait lancer une erreur si la connexion échoue', async () => {
-    const errorMessage = 'Erreur de connexion';
-    mockConnection.connect.mockRejectedValue(new Error(errorMessage));
 
-    await expect(db.connect()).rejects.toThrow(errorMessage);
+  test('doit lancer une erreur lors d\'une connexion échouée', () => {
+    // Simule une erreur de connexion
+    mockConnect.mockImplementation(cb => cb(new Error('Erreur de connexion')));
+
+    // Vérifie que l'erreur est lancée
+    expect(() => {
+      jest.isolateModules(() => {
+        require('../db');
+      });
+    }).toThrow('Erreur de connexion');
   });
 
-  test('devrait exécuter une requête avec succès', async () => {
+
+  test('doit exécuter une requête et retourner les résultats attendus', (done) => {
     const mockResult = [{ id: 1, name: 'Test' }];
-    mockConnection.query.mockResolvedValue(mockResult);
+    // Simule une requête réussie retournant des résultats
+    mockQuery.mockImplementation((sql, params, cb) => cb(null, mockResult));
 
-    const sql = 'SELECT * FROM test';
-    const params = [];
-
-    const result = await db.query(sql, params);
-
-    expect(mockConnection.query).toHaveBeenCalledWith(sql, params);
-    expect(result).toBe(mockResult);
+    // Vérifie que la requête a été exécutée avec les bons paramètres
+    jest.isolateModules(() => {
+      const db = require('../db').default;
+      db.query('SELECT * FROM test', [], (err, result) => {
+        expect(err).toBeNull();
+        expect(result).toEqual(mockResult);
+        done();
+      });
+    });
   });
 
-  test('devrait se connecter automatiquement si non connecté lors d\'une requête', async () => {
-    const mockResult = [{ id: 1, name: 'Test' }];
-    mockConnection.query.mockResolvedValue(mockResult);
 
-    const sql = 'SELECT * FROM test';
-    const params = [];
+  test('doit gérer les erreurs lors de l\'exécution d\'une requête', (done) => {
+    const mockError = new Error('Erreur de requête');
+    // Simule une erreur lors de l'exécution de la requête
+    mockQuery.mockImplementation((sql, params, cb) => cb(mockError));
 
-    await db.query(sql, params);
-
-    expect(mysql.createConnection).toHaveBeenCalled();
-    expect(mockConnection.connect).toHaveBeenCalled();
-    expect(mockConnection.query).toHaveBeenCalledWith(sql, params);
+    // Vérifie que l'erreur est lancée
+    jest.isolateModules(() => {
+      const db = require('../db').default;
+      db.query('SELECT * FROM test', [], (err, result) => {
+        expect(err).toBe(mockError);
+        expect(result).toBeUndefined();
+        done();
+      });
+    });
   });
 });
