@@ -1,22 +1,41 @@
+/**
+ * Suite de tests pour les fonctions liées aux utilisateurs.
+ * Ces tests vérifient la création d'utilisateurs, la recherche par email,
+ * et la création d'utilisateurs via Google.
+ */
+
+/* eslint-disable no-undef */
+// Simulation de la connexion à la base de données MySQL pour les tests
+jest.mock('mysql2', () => ({
+  createConnection: jest.fn(() => ({
+      connect: jest.fn((cb) => cb(null)),
+      query: jest.fn((sql, params, cb) => cb(null, [])),
+      end: jest.fn(),
+  })),
+}));
+
 import { createUser, findUserByEmail, createGoogleUser } from '../User';
 import db from '../../config/db.js';
-import { describe, beforeEach, test, expect, jest } from '@jest/globals';
+import { describe, beforeEach, test, expect } from '@jest/globals';
 
-
+// Simulation de la configuration de la base de données pour les tests
 jest.mock('../../config/db.js');
+
 
 describe('Tests des fonctions utilisateur', () => {
   
   beforeEach(() => {
+    // Réinitialisation des mocks avant chaque test pour éviter les interférences
     jest.clearAllMocks();
   });
 
-  test('doit créer un nouvel utilisateur', (done) => {
+  test('doit créer un nouvel utilisateur avec des informations valides', (done) => {
     const email = 'test@example.com';
     const hashedPassword = 'hashedPassword';
     const firstName = 'John';
     const lastName = 'Doe';
 
+    // Simulation de la réponse de la base de données pour l'insertion d'un utilisateur
     db.query.mockImplementation((query, params, callback) => {
       callback(null, { affectedRows: 1 });
     });
@@ -33,14 +52,16 @@ describe('Tests des fonctions utilisateur', () => {
     });
   });
 
+
   test('doit trouver un utilisateur par email', (done) => {
     const email = 'test@example.com';
     const user = { id: '123', email, firstName: 'John', lastName: 'Doe' };
 
+    // Simulation de la réponse de la base de données pour la recherche d'un utilisateur
     db.query.mockImplementation((query, params, callback) => {
       callback(null, [user]);
     });
-
+    // Appelle la fonction à tester
     findUserByEmail(email, (err, result) => {
       expect(err).toBeNull();
       expect(result).toEqual([user]);
@@ -53,11 +74,13 @@ describe('Tests des fonctions utilisateur', () => {
     });
   });
 
-  test('doit créer un nouvel utilisateur Google', (done) => {
+
+  test('doit créer un nouvel utilisateur Google et récupérer son ID', (done) => {
     const email = 'googleuser@example.com';
     const fullName = 'Jane Doe';
     const hashedPassword = '';
 
+    // Simulation de la réponse de la base de données pour l'insertion et la recherche d'un utilisateur
     db.query.mockImplementation((query, params, callback) => {
       if (query.includes('INSERT INTO users')) {
         callback(null, { affectedRows: 1 });
