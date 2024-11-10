@@ -13,23 +13,27 @@ jest.mock('mysql2', () => ({
   })),
 }));
 
+
 import { createHotels } from '../hotelsController.js';
 import db from '../../config/db.js';
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
+
 jest.mock('../../config/db.js');
 
-describe('Tests pour la fonction createHotels', () => {
+
+describe('Tests de la fonction createHotels', () => {
   beforeEach(() => {
     // Réinitialise les mocks avant chaque test
     jest.clearAllMocks();
   });
 
+
   it('devrait ne pas appeler la base de données si aucun hôtel n\'est fourni', (done) => {
     createHotels('trip123', [], (err) => {
-      // Aucune erreur ne doit être renvoyée
+      // Vérifie qu'aucune erreur n'est retournée
       expect(err).toBeNull();
-      // La base de données ne doit pas être interrogée
+      // Vérifie que la requête n'a pas été appelée
       expect(db.query).not.toHaveBeenCalled();
       done();
     });
@@ -47,18 +51,17 @@ describe('Tests pour la fonction createHotels', () => {
         description: 'Un hôtel de test'
       }
     ];
-
+    // Simule une réponse réussie de la base de données
     db.query.mockImplementation((query, values, callback) => {
-       // Simule une réponse réussie de la base de données
       callback(null);
     });
 
     createHotels('trip123', mockHotels, (err) => {
-      // Aucune erreur ne doit être renvoyée
+      // Vérifie qu'aucune erreur n'est retournée
       expect(err).toBeNull();
-      // La base de données doit être interrogée une fois
+      // Vérifie que la requête a été appelée une fois
       expect(db.query).toHaveBeenCalledTimes(1);
-      // Vérifie que la requête d'insertion est correcte
+      // Vérifie que la requête contient la bonne instruction SQL
       expect(db.query.mock.calls[0][0]).toContain('INSERT INTO hotels');
       expect(db.query.mock.calls[0][1]).toEqual([
         'trip123',
@@ -68,13 +71,13 @@ describe('Tests pour la fonction createHotels', () => {
         '{"lat":48.8566,"lng":2.3522}',
         4.5,
         'Un hôtel de test'
-      ]); // Vérifie que les valeurs insérées sont correctes
+      ]); // Vérifie que les valeurs passées à la requête sont correctes
       done();
     });
   });
 
 
-  it('devrait gérer les erreurs de la base de données lors de l\'insertion d\'un hôtel', (done) => {
+  it('devrait retourner une erreur si la base de données renvoie une erreur', (done) => {
     const mockHotels = [
       {
         hotelName: 'Hôtel Test',
@@ -85,18 +88,15 @@ describe('Tests pour la fonction createHotels', () => {
         description: 'Un hôtel de test'
       }
     ];
-
+    // Définit une erreur de base de données
     const mockError = new Error('Erreur de base de données');
     db.query.mockImplementation((query, values, callback) => {
-      // Simule une erreur de la base de données
       callback(mockError);
     });
-
+    // Appelle la fonction createHotels avec les données valides et l'erreur de base de données
     createHotels('trip123', mockHotels, (err) => {
-       // L'erreur renvoyée doit correspondre à l'erreur simulée
       expect(err).toBe(mockError);
-      // La base de données doit être interrogée une fois
-      expect(db.query).toHaveBeenCalledTimes(1);
+      expect(db.query).toHaveBeenCalledTimes(1); 
       done();
     });
   });
@@ -121,16 +121,13 @@ describe('Tests pour la fonction createHotels', () => {
         description: 'Deuxième hôtel de test'
       }
     ];
-
+    // Simule une réponse réussie de la base de données
     db.query.mockImplementation((query, values, callback) => {
-      // Simule une réponse réussie de la base de données
       callback(null);
     });
-
+    // Appelle la fonction createHotels avec les données valides
     createHotels('trip123', mockHotels, (err) => {
-       // Aucune erreur ne doit être renvoyée
       expect(err).toBeNull();
-      // La base de données doit être interrogée deux fois
       expect(db.query).toHaveBeenCalledTimes(2);
       expect(db.query.mock.calls[0][1]).toEqual([
         'trip123',
