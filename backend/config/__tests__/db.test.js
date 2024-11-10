@@ -1,13 +1,14 @@
-/* eslint-disable no-undef */
+/**
+ * Tests pour la connexion à la base de données et les requêtes SQL.
+ * Ces tests vérifient que la connexion à la base de données fonctionne correctement,
+ * ainsi que le traitement des requêtes et des erreurs.
+ */
+
 import 'dotenv/config';
 import mysql from 'mysql2';
 import { describe, test, expect, beforeEach } from '@jest/globals';
 
-/**
- * Tests pour le module de base de données.
- * Ces tests vérifient la connexion à la base de données et le comportement des requêtes.
- */
-
+/* eslint-disable no-undef */
 const mockConnect = jest.fn();
 const mockQuery = jest.fn();
 const mockConnection = {
@@ -15,43 +16,42 @@ const mockConnection = {
   query: mockQuery,
 };
 
-// Mock du module mysql2 pour simuler la connexion et les requêtes
+
 jest.mock('mysql2', () => ({
   createConnection: jest.fn(() => mockConnection)
 }));
 
 
-describe('Tests de connexion et de requêtes de la base de données', () => {
+describe('Tests de la connexion et des requêtes de la base de données', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Simule une connexion réussie
+    // Simule une connexion réussie à la base de données
     mockConnect.mockImplementation(cb => cb(null));
-    // Simule une requête réussie retournant un tableau vide
+    // Simule une requête SQL réussie
     mockQuery.mockImplementation((sql, params, cb) => cb(null, []));
   });
 
 
-  test('doit établir une connexion à la base de données avec les bonnes configurations', () => {
+  test('doit établir une connexion à la base de données avec les bonnes informations', () => {
     jest.isolateModules(() => {
       require('../db');
-      // Vérifie que la méthode createConnection a été appelée avec les bonnes informations 
+      // Vérifie que la connexion à la base de données a été établie avec les bonnes informations
       expect(mysql.createConnection).toHaveBeenCalledWith({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
       });
-      // Vérifie que la méthode connect a été appelée
+      // Vérifie que la fonction connect a été appelée
       expect(mockConnect).toHaveBeenCalled();
     });
   });
 
 
-  test('doit lancer une erreur lors d\'une connexion échouée', () => {
+  test('doit lancer une erreur si la connexion échoue', () => {
     // Simule une erreur de connexion
     mockConnect.mockImplementation(cb => cb(new Error('Erreur de connexion')));
-
-    // Vérifie que l'erreur est lancée
+    // Vérifie que l'erreur de connexion est levée
     expect(() => {
       jest.isolateModules(() => {
         require('../db');
@@ -60,12 +60,11 @@ describe('Tests de connexion et de requêtes de la base de données', () => {
   });
 
 
-  test('doit exécuter une requête et retourner les résultats attendus', (done) => {
+  test('doit exécuter une requête SQL et retourner les résultats', (done) => {
     const mockResult = [{ id: 1, name: 'Test' }];
-    // Simule une requête réussie retournant des résultats
+    // Simule une requête SQL réussie avec des résultats
     mockQuery.mockImplementation((sql, params, cb) => cb(null, mockResult));
-
-    // Vérifie que la requête a été exécutée avec les bons paramètres
+    // Isolation du module pour éviter les interférences entre les tests
     jest.isolateModules(() => {
       const db = require('../db').default;
       db.query('SELECT * FROM test', [], (err, result) => {
@@ -77,12 +76,11 @@ describe('Tests de connexion et de requêtes de la base de données', () => {
   });
 
 
-  test('doit gérer les erreurs lors de l\'exécution d\'une requête', (done) => {
+  test('doit gérer les erreurs lors de l\'exécution d\'une requête SQL', (done) => {
     const mockError = new Error('Erreur de requête');
     // Simule une erreur lors de l'exécution de la requête
     mockQuery.mockImplementation((sql, params, cb) => cb(mockError));
-
-    // Vérifie que l'erreur est lancée
+    // Isolation du module pour éviter les interférences entre les tests
     jest.isolateModules(() => {
       const db = require('../db').default;
       db.query('SELECT * FROM test', [], (err, result) => {
